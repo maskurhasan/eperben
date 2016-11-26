@@ -1,0 +1,89 @@
+<html>
+<head>
+<title>Belajar Hitung</title>
+<script type="text/javascript" src="jquery-1.7.2.min.js"></script>
+
+
+<script type="text/javascript">
+//ini contoh 2
+        $(document).ready(function() {
+            $('#diskon').keyup(function(){
+            <!-- Ambil nilai bayar dan diskon !-->
+            var bayar=parseInt($('#bayar').val());
+            var diskon=parseInt($('#diskon').val());
+ 
+            <!-- Perhitungan bayar-(diskon/100 x bayar) !-->
+            var total_bayar=bayar-(diskon/100)*bayar;
+            $('#Tbayar').val(total_bayar);
+            });
+        });
+</script>
+</head>
+<body>
+<input type="text" name="Ajumlah1" rel="Ajumlah"/><br/>
+<input type="text" name="Ajumlah2" rel="Ajumlah"/><br/>
+<input type="text" name="Ajumlah3" rel="Ajumlah"/><br/>
+<input type="text" name="Ajumlah4" rel="Ajumlah"/><br/>
+<input type="text" name="Ajumlah5" rel="Ajumlah"/><br/>
+<input type="text" name="Ajumlah6" rel="Ajumlah"/><br/><br/>
+<!-- Dan seterusnya -->
+ 
+Total A: <input type="text" name="Atotal" id="Atotal"/><br/><br/>
+<input type="text" name="Bjumlah1" rel="Bjumlah"/><br/>
+<input type="text" name="Bjumlah2" rel="Bjumlah"/><br/>
+<input type="text" name="Bjumlah3" rel="Bjumlah"/><br/>
+<input type="text" name="Bjumlah4" rel="Bjumlah"/><br/><br/>
+<!-- Dan seterusnya -->
+ 
+Total B: <input type="text" name="Btotal" id="Btotal"/><br/><br/>
+ 
+Selisih: <input type="text" name="selisih" id="selisih"/><br/><br/><br/>
+<hr />
+ <table border="0" cellpadding="5" align="center">
+            <form action="" method="post">
+            <tr>
+                <td>Total Bayar</td> <td> : </td> <td><input type="text" name="bayar" id="bayar" /> (dalam Rp)</td>
+            </tr>
+            <tr>
+                <td>Diskon</td> <td> : </td> <td><input type="text" name="diskon" id="diskon" /> % </td>
+            </tr>
+            <tr>
+                <td>Total Bayar (sesudah diskon)</td> <td> : </td>
+                <td><input type="text" name="Tbayar" id="Tbayar"  readonly="readonly" /> (dalam Rp)</td>
+            </tr>
+            </tr>
+            </form>
+        </table>
+</body>
+</html>
+<script type="text/javascript">
+$(document).ready(function(){
+    var inpA = "input[rel=Ajumlah]";
+    var inpB = "input[rel=Bjumlah]";
+    
+    $(inpA).bind('keyup',function() {
+        var avalA=0;
+        var bVal = parseInt($('#Btotal').val(),10);
+        $(inpA).each(function() {
+            if(this.value !='') avalA += parseInt(this.value,10);
+        });
+        $('#Atotal').val(avalA);
+        $('#selisih').val(avalA - bVal);
+        console.log('Value avalA: ' + avalA);
+    });
+    
+    $(inpB).bind('keyup',function() {
+        var avalB=0;
+        var aVal = parseInt($('#Atotal').val(),10);
+        $(inpB).each(function() {
+            if(this.value !='') avalB += parseInt(this.value,10);
+        });
+        $('#Btotal').val(avalB);
+        $('#selisih').val(aVal - avalB);
+        console.log('Value avalB: ' + avalB);
+    });
+});
+</script>
+
+
+<!-- belajar -->
