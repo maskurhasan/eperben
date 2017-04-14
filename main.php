@@ -493,7 +493,7 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 
 								<b class="arrow"></b>
 							</li>
-					
+
 
               <li class="">
 								<a href="?module=ttdbukti">
@@ -533,11 +533,24 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 								</a>
 								<b class="arrow"></b>
 							</li>
+              <li class="">
+								<a href="?module=cklist">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Check List
+								</a>
+								<b class="arrow"></b>
+							</li>
 					<?php } ?>
 						</ul>
 					</li>
           <?php
           if($_SESSION[UserLevel]==2) {
+            echo '<li class="">
+                    <a href="?module=datakegiatan">
+                      <i class="menu-icon fa fa-list"></i>
+                      <span class="menu-text"> Program / Kegiatan</span>
+                    </a>
+                  </li>';
             echo '<li class="">
                     <a href="?module=spm">
                       <i class="menu-icon fa fa-book"></i>
@@ -567,6 +580,12 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
                   </li>';
           } else {
           ?>
+          <li class="">
+            <a href="?module=datakegiatan">
+                <i class="menu-icon fa fa-list"></i>
+                <span class="menu-text"> Program / Kegiatan</span>
+            </a>
+            </li>
           <li class="">
             <a href="?module=spm">
               <i class="menu-icon fa fa-book"></i>
@@ -605,23 +624,49 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
             <b class="arrow"></b>
 
             <ul class="submenu">
-              <li class="active">
+            <?php
+            if($_SESSION[UserLevel]==2) {
+              echo '<li class="active">
                 <a href="?module=laporanskpd">
                   <i class="menu-icon fa fa-caret-right"></i>
                   Laporan SKPD
                 </a>
-
                 <b class="arrow"></b>
-              </li>
-
-              <li class="">
+              </li>';
+            } elseif($_SESSION[UserLevel]==3) {
+              echo '<li class="">
+                <a href="?module=laporanskpd">
+                  <i class="menu-icon fa fa-caret-right"></i>
+                  Laporan Verifikasi
+                </a>
+                <b class="arrow"></b>
+              </li>';
+            }  elseif($_SESSION[UserLevel]==4) {
+              echo '<li class="">
+                <a href="?module=laporanskpd">
+                  <i class="menu-icon fa fa-caret-right"></i>
+                  Laporan BUD
+                </a>
+                <b class="arrow"></b>
+              </li>';
+            }  elseif($_SESSION[UserLevel]==5) {
+              echo '<li class="">
+                <a href="?module=laporanskpd">
+                  <i class="menu-icon fa fa-caret-right"></i>
+                  Laporan Penerbitan
+                </a>
+                <b class="arrow"></b>
+              </li>';
+            } else {
+              echo '<li class="">
                 <a href="?module=buktispm">
                   <i class="menu-icon fa fa-caret-right"></i>
                   Rincian Anggaran
                 </a>
-
                 <b class="arrow"></b>
-              </li>
+              </li>';
+            }
+            ?>
             </ul>
           </li>
 
@@ -864,6 +909,7 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 
 		<!-- inline scripts related to this page -->
 		<script type="text/javascript">
+
 			jQuery(function($) {
 				$('#id-disable-check').on('click', function() {
 					var inp = $('#form-input-readonly').get(0);

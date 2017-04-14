@@ -89,25 +89,36 @@ window.print();
                 </tr>
                 </thead>
                 <tbody>";
-                $sql= mysql_query("SELECT a.*,b.Keterangan,b.Anggaran FROM verifikasi a, spm b
+                function hitpotongan($JnsPotongan,$id_Spm) {
+                  $q = mysql_query("SELECT SUM(NilaiPotongan) AS jmlpotongan
+                                    FROM potonganspm
+                                    WHERE id_Spm = '$id_Spm'
+                                    AND JnsPotongan = '$JnsPotongan'");
+                  $r = mysql_fetch_array($q);
+                  return $r[jmlpotongan];
+                }
+                $sql= mysql_query("SELECT a.*,b.Keterangan,b.Anggaran,b.Jenis,b.id_Spm as idspm
+                                    FROM verifikasi a, spm b
                                     WHERE b.id_Skpd = '$_SESSION[id_Skpd]'
-                                    AND a.id_Spm = b.id_Spm
-                                    AND a.StatusSp2d <> 0");
+                                    GROUP BY b.id_Spm");
                 $no = 1;
+                $jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
+                $jnspotongan = array(1 => 'PPN 10%',2=>'PPH 21',3=>'PPH 22',4=>'PPH Gaji',5=>'IWP',6=>'TAPERUM',7=>'ASKES' );
+
                 while($r = mysql_fetch_array($sql)) {
                   echo "<tr>
                     <td>".$no++."</td>
                     <td>".tgl_indo($r[tgl_Sp2d])."</td>
                     <td>$r[NomorSp2d]</td>
-                    <td>SPM-GU</td>
+                    <td>".$jns_spm[$r[Jenis]]."</td>
                     <td>$r[Keterangan]</td>
                     <td>".angkrp($r[Anggaran])."</td>
-                    <td>".angkrp($r[Anggaran])."</td>
-                    <td>".angkrp($r[Anggaran])."</td>
-                    <td>".angkrp($r[Anggaran])."</td>
-                    <td>".angkrp($r[Anggaran])."</td>
-                    <td>".angkrp($r[Anggaran])."</td>
-                    <td>".angkrp($r[Anggaran])."</td>
+                    <td>".angkrp(hitpotongan(1,$r[$idspm]))."</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                   </tr>";
                 }

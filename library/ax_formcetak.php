@@ -86,6 +86,300 @@ switch ($postur) {
                   </div>';
             echo '</form>';
   break;
+  case 'rincspm':
+    echo "
+            <form method=get class='form-horizontal' action='report/rpt_rincianspm.php' target='_blank'>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>Nomor SPM</label>
+              <div class='col-sm-10'>";
+                //tampilkan nomor spm per skpd
+                $qq = mysql_query("SELECT id_Spm,Nomor FROM spm
+                                    WHERE id_Skpd = '$_SESSION[id_Skpd]'
+                                    AND TahunAngg = '$_SESSION[thn_Login]'");
+                echo "<select name='id' class='col-xs-10 col-sm-5' id='form-field-1'>
+                    <option value=''>-Pilih SPM-</option>";
+                while ($r = mysql_fetch_array($qq)) {
+                  # code...
+                  echo "<option value=$r[id_Spm]>$r[Nomor]</option>";
+                }
+              echo "</select></div>
+            </div>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>Status</label>
+              <div class='col-sm-10'>";
+                  $status = array(0=>'Draf',1=>'Final');
+                echo "<select name='StatusSpm' class='col-xs-10 col-sm-5' id='form-field-1'>
+                    <option value=''>-Pilih Status-</option>";
+                  foreach ($status as $key => $value) {
+                      echo "<option value=$key>$value</option>";
+                  }
+                echo "</select>
+              </div>
+            </div>";
+            echo '<hr>
+            <div>
+                <br>
+
+            </div>';
+            echo '<div class="clearfix form-actions">
+                  <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="submit" name="cetak">
+                      <i class="ace-icon fa fa-check bigger-110"></i>
+                      Cetak
+                    </button>
+
+                    <button class="btn btn-info" type="" name="Excel">
+                      <i class="ace-icon fa fa-file-excel-o bigger-110"></i>
+                      Excel
+                    </button>
+
+                    <button class="btn btn-info" type="submit" name="cetak">
+                      <i class="ace-icon fa fa-file-pdf-o bigger-110"></i>
+                      PDF
+                    </button>
+                    <button class="btn" type="reset">
+                      <i class="ace-icon fa fa-undo bigger-110"></i>
+                      Reset
+                    </button>
+                  </div>
+                </div>';
+          echo '</form>';
+  break;
+  case 'verifikasi':
+    echo "
+            <form method=get class='form-horizontal' action='report/rpt_verifikasi.php' target='_blank'>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>Verifikator</label>
+              <div class='col-sm-10'>";
+                //tampilkan nomor spm per skpd
+                $qq = mysql_query("SELECT id_User,nm_Lengkap FROM user
+                                    WHERE id_User = '$_SESSION[id_User]'
+                                    AND UserLevel = '3'");
+                echo "<select name='id' class='col-xs-10 col-sm-5' id='form-field-1'>
+                    <option value=''>-Pilih Verifikator-</option>";
+                while ($r = mysql_fetch_array($qq)) {
+                  # code...
+                  echo "<option value=$r[id_User]>$r[nm_Lengkap]</option>";
+                }
+              echo "</select></div>
+            </div>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>SKPD</label>
+              <div class='col-sm-10'>
+              <select class='form-control' name=skpd placeholder=Kecamatan id=id_Kecamatan onchange='pilih_kecamatan(this.value);' required>
+                <option value=''>Pilih SKPD</option>";
+                $qx=mysql_query("SELECT * FROM skpd");
+
+                while ($rx=mysql_fetch_array($qx)) {
+                  echo "<option value=$rx[id_Skpd]>$rx[nm_Skpd]</option>";
+                }
+              echo "</select></div>
+            </div>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>Jenis</label>
+              <div class='col-sm-10'>";
+                  $jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
+                echo "<select name='Jenis' class='col-xs-10 col-sm-5' id='form-field-1'>
+                    <option value=''>-Pilih Jenis SPM-</option>";
+                  foreach ($jns_spm as $key => $value) {
+                      echo "<option value=$key>$value</option>";
+                  }
+                echo "</select>
+              </div>
+            </div>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>Status</label>
+              <div class='col-sm-10'>";
+                  $status = array(0=>'Draf',1=>'Final');
+                echo "<select name='StatusSpm' class='col-xs-10 col-sm-5' id='form-field-1'>
+                    <option value=''>-Pilih Status-</option>";
+                  foreach ($status as $key => $value) {
+                      echo "<option value=$key>$value</option>";
+                  }
+                echo "</select>
+              </div>
+            </div>";
+            echo '<hr>
+            <div>
+                <br>
+
+            </div>';
+            echo '<div class="clearfix form-actions">
+                  <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="submit" name="cetak">
+                      <i class="ace-icon fa fa-check bigger-110"></i>
+                      Cetak
+                    </button>
+
+                    <button class="btn btn-info" type="" name="Excel">
+                      <i class="ace-icon fa fa-file-excel-o bigger-110"></i>
+                      Excel
+                    </button>
+
+                    <button class="btn btn-info" type="submit" name="cetak">
+                      <i class="ace-icon fa fa-file-pdf-o bigger-110"></i>
+                      PDF
+                    </button>
+                    <button class="btn" type="reset">
+                      <i class="ace-icon fa fa-undo bigger-110"></i>
+                      Reset
+                    </button>
+                  </div>
+                </div>';
+          echo '</form>';
+  break;
+  case 'laporanbud':
+    echo "
+            <form method=get class='form-horizontal' action='report/rpt_laporanbud.php' target='_blank'>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>Verifikator</label>
+              <div class='col-sm-10'>";
+                //tampilkan nomor spm per skpd
+                $qq = mysql_query("SELECT id_User,nm_Lengkap FROM user
+                                    WHERE id_User = '$_SESSION[id_User]'
+                                    AND UserLevel = '3'");
+                echo "<select name='id' class='col-xs-10 col-sm-5' id='form-field-1'>
+                    <option value=''>-Pilih Verifikator-</option>";
+                while ($r = mysql_fetch_array($qq)) {
+                  # code...
+                  echo "<option value=$r[id_User]>$r[nm_Lengkap]</option>";
+                }
+              echo "</select></div>
+            </div>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>SKPD</label>
+              <div class='col-sm-10'>
+              <select class='form-control' name=skpd placeholder=Kecamatan id=id_Kecamatan onchange='pilih_kecamatan(this.value);'>
+                <option value=''>Pilih SKPD</option>";
+                $qx=mysql_query("SELECT * FROM skpd");
+
+                while ($rx=mysql_fetch_array($qx)) {
+                  echo "<option value=$rx[id_Skpd]>$rx[nm_Skpd]</option>";
+                }
+              echo "</select></div>
+            </div>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>Jenis</label>
+              <div class='col-sm-10'>";
+                  $jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
+                echo "<select name='Jenis' class='col-xs-10 col-sm-5' id='form-field-1'>
+                    <option value=''>-Pilih Jenis SPM-</option>";
+                  foreach ($jns_spm as $key => $value) {
+                      echo "<option value=$key>$value</option>";
+                  }
+                echo "</select>
+              </div>
+            </div>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>Status</label>
+              <div class='col-sm-10'>";
+                  $status = array(0=>'Draf',1=>'Final');
+                echo "<select name='StatusSpm' class='col-xs-10 col-sm-5' id='form-field-1'>
+                    <option value=''>-Pilih Status-</option>";
+                  foreach ($status as $key => $value) {
+                      echo "<option value=$key>$value</option>";
+                  }
+                echo "</select>
+              </div>
+            </div>";
+            echo '<hr>
+            <div>
+                <br>
+
+            </div>';
+            echo '<div class="clearfix form-actions">
+                  <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="submit" name="cetak">
+                      <i class="ace-icon fa fa-check bigger-110"></i>
+                      Cetak
+                    </button>
+
+                    <button class="btn btn-info" type="" name="Excel">
+                      <i class="ace-icon fa fa-file-excel-o bigger-110"></i>
+                      Excel
+                    </button>
+
+                    <button class="btn btn-info" type="submit" name="cetak">
+                      <i class="ace-icon fa fa-file-pdf-o bigger-110"></i>
+                      PDF
+                    </button>
+                    <button class="btn" type="reset">
+                      <i class="ace-icon fa fa-undo bigger-110"></i>
+                      Reset
+                    </button>
+                  </div>
+                </div>';
+          echo '</form>';
+  break;
+  case 'laporansp2d':
+    echo "
+            <form method=get class='form-horizontal' action='report/rpt_laporansp2d.php' target='_blank'>
+
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>SKPD</label>
+              <div class='col-sm-10'>
+              <select class='form-control' name=skpd placeholder=Kecamatan id=id_Kecamatan onchange='pilih_kecamatan(this.value);'>
+                <option value=''>Pilih SKPD</option>";
+                $qx=mysql_query("SELECT * FROM skpd");
+
+                while ($rx=mysql_fetch_array($qx)) {
+                  echo "<option value=$rx[id_Skpd]>$rx[nm_Skpd]</option>";
+                }
+              echo "</select></div>
+            </div>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>Jenis</label>
+              <div class='col-sm-10'>";
+                  $jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
+                echo "<select name='Jenis' class='col-xs-10 col-sm-5' id='form-field-1'>
+                    <option value=''>-Pilih Jenis SPM-</option>";
+                  foreach ($jns_spm as $key => $value) {
+                      echo "<option value=$key>$value</option>";
+                  }
+                echo "</select>
+              </div>
+            </div>
+            <div class=form-group>
+              <label class='col-sm-2 control-label'>Status</label>
+              <div class='col-sm-10'>";
+                  $status = array(0=>'Draf',1=>'Final');
+                echo "<select name='StatusSpm' class='col-xs-10 col-sm-5' id='form-field-1'>
+                    <option value=''>-Pilih Status-</option>";
+                  foreach ($status as $key => $value) {
+                      echo "<option value=$key>$value</option>";
+                  }
+                echo "</select>
+              </div>
+            </div>";
+            echo '<hr>
+            <div>
+                <br>
+
+            </div>';
+            echo '<div class="clearfix form-actions">
+                  <div class="col-md-offset-3 col-md-9">
+                    <button class="btn btn-info" type="submit" name="cetak">
+                      <i class="ace-icon fa fa-check bigger-110"></i>
+                      Cetak
+                    </button>
+
+                    <button class="btn btn-info" type="" name="Excel">
+                      <i class="ace-icon fa fa-file-excel-o bigger-110"></i>
+                      Excel
+                    </button>
+
+                    <button class="btn btn-info" type="submit" name="cetak">
+                      <i class="ace-icon fa fa-file-pdf-o bigger-110"></i>
+                      PDF
+                    </button>
+                    <button class="btn" type="reset">
+                      <i class="ace-icon fa fa-undo bigger-110"></i>
+                      Reset
+                    </button>
+                  </div>
+                </div>';
+          echo '</form>';
+  break;
 	case 'realisasi':
       echo "<form method=get class='form-horizontal' action='report/rpt_realisasikeg.php' target='_blank'>
               <div class=form-group>
@@ -134,10 +428,10 @@ switch ($postur) {
                     $status = array(0=>'Draf',1=>'Final');
                   echo "<select name='bulan' class='col-xs-10 col-sm-5' id='form-field-1'>
                       <option value=''>-Pilih Bulan-</option>";
-                    for ($i=1; $i <= 12; $i++) { 
+                    for ($i=1; $i <= 12; $i++) {
                         echo "<option value=$i>$arrbln[$i]</option>";
                     }
-                    
+
                   echo "</select>
                 </div>
               </div>";
@@ -168,7 +462,7 @@ switch ($postur) {
                       </button>
                     </div>
                   </div>';
-            echo '</form>';    
+            echo '</form>';
   break;
   case 'kartukendali':
       echo "<form method=get class='form-horizontal' action='report/rpt_kartukendali.php' target='_blank'>
@@ -218,10 +512,10 @@ switch ($postur) {
                     $status = array(0=>'Draf',1=>'Final');
                   echo "<select name='bulan' class='col-xs-10 col-sm-5' id='form-field-1'>
                       <option value=''>-Pilih Bulan-</option>";
-                    for ($i=1; $i <= 12; $i++) { 
+                    for ($i=1; $i <= 12; $i++) {
                         echo "<option value=$i>$arrbln[$i]</option>";
                     }
-                    
+
                   echo "</select>
                 </div>
               </div>";
@@ -252,7 +546,7 @@ switch ($postur) {
                       </button>
                     </div>
                   </div>';
-            echo '</form>';    
+            echo '</form>';
   break;
   case 'rfkviareaslisasi2':
         echo "<form method=get action='report/rfkviarealisasi2.php' target='_blank'>

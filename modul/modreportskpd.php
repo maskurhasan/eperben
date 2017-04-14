@@ -9,9 +9,8 @@ $cek=user_akses($_GET['module'],$_SESSION['id_User']);
 if($cek==1 OR $_SESSION['UserLevel']=='1') {
 //----------------------------------
 
-  switch ($_GET[act]) {
+  switch ($_SESSION[UserLevel]) {
     default:
-
           echo '<div class="col-md-4">
               <div class="card">
                 <div class="header">
@@ -19,19 +18,22 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                   <p class="category"></p>
                 </div>
               <div class="content">';
+        if($_SESSION[UserLevel]==2) {
          echo "<p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='register' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Register SPM</button></p>
+                <p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='rincspm' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Rincian SPM</button></p>
                 <p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='realisasi' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Realisasi Anggaran</button></p>
                 <p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='kartukendali' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Kartu Kendali Kegiatan</button></p>
-				        <p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='rfkmodel2' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Realisasi Fisik & Keuangan Model 2</button></p>
-				<!--
-                  <p><button class='btn btn-md btn-primary btn-fill btn-block' type=button id=id_Cetak value='rfkviareaslisasi2' onClick='ax_form_cetak(this.value)'><i class='fa fa-page'></i> Realisasi Fisik & Keuangan V2</button></p>
-                  <p><button class='btn btn-md btn-warning btn-fill btn-block' type=button id=id_Cetak value='perkeg' onClick='ax_form_cetak(this.value)'><i class='fa fa-page'></i> Perkembangan Kegiatan</button></p>
-                  <p><button class='btn btn-md btn-warning btn-fill btn-block' type=button id=id_Cetak value='ringkasan' onClick='ax_form_cetak(this.value)'><i class='fa fa-page'></i> Ringkasan Anggaran</button></p>
-                  <p><button class='btn btn-md btn-danger btn-fill btn-block' type=button id=id_Cetak value='profilkeg' onClick='ax_form_cetak(this.value)'><i class='fa fa-page'></i> Profil Kegiatan</button></p>
-                  <p><button class='btn btn-md btn-success btn-fill btn-block' type=button id=id_Cetak value='peta' onClick='ax_form_cetak(this.value)'><i class='fa fa-page'></i> Peta Kegiatan</button></p>
-                  <p><button class='btn btn-md btn-success btn-fill btn-block' type=button id=id_Cetak value='chart' onClick='ax_form_cetak(this.value)'><i class='fa fa-chart'></i> Chart</button></p>
-        -->";
+				        <p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='rfkmodel2' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Realisasi Fisik & Keuangan Model 2</button></p>";
+        } elseif($_SESSION[UserLevel]==3) {
+          echo "<p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='verifikasi' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Laporan Verifikasi</button></p>";
 
+        } elseif($_SESSION[UserLevel]==4) {
+          echo "<p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='laporanbud' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Laporan BUD</button></p>";
+
+        } elseif($_SESSION[UserLevel]==5) {
+          echo "<p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='laporansp2d' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Laporan Penerbitan SP2D</button></p>";
+
+        }
               echo '</div><div class="footer">
               </div>
             </div>
@@ -46,8 +48,6 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
 
                   </div>
                 </div>';
-
-
     break;
   }//end switch
 } //end tanpa hak akses

@@ -17,39 +17,36 @@ include "modmaster.php";
     default:
           //----------------------------------
         //tentukan urusan skpd
-        $q1 = mysql_query("SELECT * FROM skpd WHERE id_Skpd = '$_SESSION[id_Skpd]'");
-
+       
         if($_SESSION['UserLevel']==1) {
-         echo '<div class="col-md-6">
-                    <div class="card">
-                      <div class="content">';
-                      echo "<form class='form-horizontal' method=post action='modul/act_moduser.php?module=user&act=add'>";
-                        echo '<div class="form-group">
-                            <label for="inputPassword3" class="col-sm-2 control-label">Urusan</label>
-                            <div class="col-sm-10">';
-                            echo "<select class='form-control' name=id_Urusan placeholder=pilih Urusan id=id_Urusan onchange='pilih_Urusan(this.value);'>
-                                  <option selected>Pilih Urusan</option>";
-                                  $q=mysql_query("SELECT * FROM urusan");
-                                  while ($r=mysql_fetch_array($q)) {
-                                    echo "<option value=$r[id_Urusan]>$r[id_Urusan] $r[nm_Urusan]</option>";
-                                  }
-                            echo '</select>
-                            </div>
+                 echo '<div class="col-md-8">
+                        <div class="card">
+                          <div class="header">
+                            <p class="category">Data Profil SKPD</p>
                           </div>
-                          <div class="form-group">
-                            <label for="inputPassword3" class="col-sm-2 control-label">SKPD</label>
-                            <div class="col-sm-10">';
-                              echo "<select class='form-control' name=id_BidUrusan  placeholder=pilih Urusan id=id_BidUrusan onchange='vw_tbl(this.value);'>
-                                <option value=#>Pilih Bid.Urusan</option></select>";
-                              echo '</select>
-                            </div>
-                          </div>
-                      </form>
+                          <div class="content table-responsive">
+                            <table class="table table-bordered table-striped">
+                              <thead>
+                              <tr>
+                                <th></th><th>Nama SKPD</th><th>Kepala SKPD</th>
+                              <th></th></tr>
+                              </thead>
+                              <tbody>';
+                            $q1 = mysql_query("SELECT * FROM skpd");
+                            $no=1;
+                            while($dt = mysql_fetch_array($q1)) {
+                                echo "<tr>
+                                        <td>".$no++."</td>
+                                        <td>$dt[nm_Skpd]</td>
+                                        <td>$dt[nm_Kepala]</td>
+                                        <td class=align-center><a href='?module=skpd&act=edit&id=$dt[id_Skpd]'><i class='fa fa-edit fa-lg'></i> Edit</a>
+                                            </td>
+                                        </tr>";
+                              }
+                            echo '<tbody></table>
+                        </div>
                       </div>
-                      </div>
-                  </div>
-              <div class="col-md-12" id="vw_skpd">
-              </div>';
+                      </div>';
         } else {
           $q1 = mysql_query("SELECT * FROM skpd WHERE id_Skpd = '$_SESSION[id_Skpd]'");
           $no=1;
@@ -61,10 +58,10 @@ include "modmaster.php";
                             <p class="category">Data Profil SKPD</p>
                           </div>
                           <div class="content table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover table-bordered">
                               <thead>
                               <tr>
-                                <th>Nama SKPD</th><th>APBD</th><th>DAK</th><th>APBN</th>
+                                <th>Nama SKPD</th><th>Nama Kepala</th>
                               <th>Aksi</th></tr>
                               </thead>
                               <tbody>';
@@ -73,9 +70,7 @@ include "modmaster.php";
                             while($dt = mysql_fetch_array($q1)) {
                                 echo "<tr>
                                         <td>$dt[nm_Skpd]</td>
-                                        <td>".number_format($dt[apbd])."</td>
-                                        <td>".number_format($dt[dak])."</td>
-                                        <td>".number_format($dt[apbn])."</td>
+                                        <td>$dt[nm_Kepala]</td>
                                         <td class=align-center><a href='?module=skpd&act=edit&id=$dt[id_Skpd]'><i class='fa fa-edit fa-lg'></i> Edit</a>
                                             </td>
                                         </tr>";
@@ -158,33 +153,10 @@ echo '<div class="col-md-8">
                       echo '</select>
                     </div>
                   </div>
-                  <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">Visi dan Misi</label>
-                    <div class="col-sm-10">
-                      <input class="form-control" type="text" name="visimisi" value="'.$r[visimisi].'">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">APBD</label>
-                    <div class="col-sm-10">
-                      <input class="form-control" type="text" name="apbd" value="'.$r[apbd].'" />
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">DAK</label>
-                    <div class="col-sm-10">
-                      <input class="form-control" type="text" name="dak" value="'.$r[dak].'" />
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">APBN</label>
-                    <div class="col-sm-10">
-                      <input class="form-control" type="text" name="apbn" value="'.$r[apbn].'" />
-                      <input type=hidden name=id_Skpd value="'.$r[id_Skpd].'">
-                    </div>
-                  </div>
+ 
                   <hr>
                 <div class="box">
+                  <input type=hidden name=id_Skpd value="'.$r[id_Skpd].'">
                   <input class="btn btn-primary btn-fill pull-right" type="submit" name="simpan" value=Simpan />
                   <input class="btn btn-info" type="reset" value=Reset />
                   <button class="btn btn-info" type="reset" onClick=\'window.history.back()\'><i class="fa fa-arrow-left"></i> Kembali</button>

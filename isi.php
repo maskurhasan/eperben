@@ -30,6 +30,8 @@ include "config/koneksi.php";
 			include "modul/modsp2d.php";
 		} elseif ($_GET['module']=='laporanskpd') {
 			include "modul/modreportskpd.php";
+		} elseif ($_GET['module']=='cklist') {
+			include "modul/modcklist.php";
 		}
     /*
     if ($_GET['module']=='home'){

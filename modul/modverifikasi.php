@@ -51,12 +51,14 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                       if($_SESSION['UserLevel']==1) {
                         $sql= mysql_query("SELECT a.*,b.nm_Skpd,c.StatusVer,c.StatusPengbud  FROM spm a, skpd b, verifikasi c
                                             WHERE a.id_Skpd = b.id_Skpd
-                                            AND a.id_Spm = c.id_Spm");
+                                            AND a.id_Spm = c.id_Spm
+                                            AND a.TahunAngg = '$_SESSION[thn_Login]'");
                       } elseif($_SESSION['UserLevel']==3) {
                         $sql= mysql_query("SELECT a.*,b.nm_Skpd,c.StatusVer,c.id_Ver,b.nm_Skpd,c.StatusPengbud FROM spm a, skpd b, verifikasi c
                                             WHERE a.id_Skpd = b.id_Skpd
                                             AND a.id_Spm = c.id_Spm
-                                            AND c.id_User = '$_SESSION[id_User]'");
+                                            AND c.id_User = '$_SESSION[id_User]'
+                                            AND a.TahunAngg = '$_SESSION[thn_Login]'");
                       } else {
                         $sql = "";
                       }
@@ -76,7 +78,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                 <td>".angkrp(totalspm($dt[id_Spm]))."</td>
                                 <td>$sttver</td>
                                 <td class=align-center>
-                                  <a class='btn btn-primary btn-minier' href='?module=verifikasi&act=add&id=$dt[id_Ver]'><i class='fa fa-edit fa-lg'></i> Proses</a> 
+                                  <a class='btn btn-primary btn-minier' href='?module=verifikasi&act=add&id=$dt[id_Ver]'><i class='fa fa-edit fa-lg'></i> Proses</a>
                                   <a class='btn btn-danger btn-minier' href='modul/act_modverifikasi.php?module=verifikasi&act=hapusver&id=$dt[id_Ver]' onclick=\"javascript: return confirm('Anda yakin hapus ?')\"><i class='fa fa-trash fa-lg'></i> Hapus</a>";
 
                                 echo '</td>
@@ -116,7 +118,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
               </div>
             </div>
             <div class="content table-responsive">';
-              
+
                 function totalspm($id_Spm)
                 {
                   $sql= mysql_query("SELECT SUM(c.Nilai) total FROM rincspm c
@@ -216,9 +218,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
 
 										</div>
 									</div>
-								</div>
-
-                ';
+								</div>';
 
 
   break;
@@ -430,8 +430,8 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
           												<div id="profile4" class="tab-pane">
           													<p>Lampiran Bukti SPM / SPP</p>
                                           <ul class="ace-thumbnails clearfix">';
-                        										$q = mysql_query("SELECT a.fl_Spm,a.fl_Spp1,a.fl_Spp2,a.fl_Spp3 FROM spm a, verifikasi b 
-                                                              WHERE a.id_Spm = b.id_Spm 
+                        										$q = mysql_query("SELECT a.fl_Spm,a.fl_Spp1,a.fl_Spp2,a.fl_Spp3 FROM spm a, verifikasi b
+                                                              WHERE a.id_Spm = b.id_Spm
                                                               AND b.id_Ver = '$_GET[id]'");
                                             $r = mysql_fetch_array($q);
                                             echo '<li>
@@ -469,7 +469,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                                 </div>
                                               </a>
                                             </li>
-                        										
+
                         									</ul>';
 
                                   echo '</div>
@@ -477,17 +477,17 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
           												<div id="dropdown14" class="tab-pane">
                                       <form action="modul/act_modverifikasi.php?module=verifikasi&act=lampver" method="post">
                                         <p> Check-list Kelengkapan Dokumen Pengajuan SPM </p>';
-                                        
+
                                         //tampilkan data dari table verifikasi
-                                        $q1 = mysql_query("SELECT a.Jenis,b.id_Ver,b.StatusVer FROM spm a, verifikasi b 
-                                                            WHERE b.id_Ver = '$_GET[id]' 
+                                        $q1 = mysql_query("SELECT a.Jenis,b.id_Ver,b.StatusVer FROM spm a, verifikasi b
+                                                            WHERE b.id_Ver = '$_GET[id]'
                                                             AND a.id_Spm = b.id_Spm ");
                                         $r1 = mysql_fetch_array($q1);
 
               													//untuk daftar check list
-                                        $q = mysql_query("SELECT a.*,b.Isian FROM cklist a 
-                                                          LEFT JOIN ketcklist b 
-                                                          ON a.id_Cklist = b.id_Cklist 
+                                        $q = mysql_query("SELECT a.*,b.Isian FROM cklist a
+                                                          LEFT JOIN ketcklist b
+                                                          ON a.id_Cklist = b.id_Cklist
                                                           AND b.id_Ver = '$r1[id_Ver]'
                                                           WHERE a.Jenis = '$r1[Jenis]'");
 
@@ -529,11 +529,14 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                     echo '<form action="modul/act_modverifikasi.php?module=verifikasi&act=ubahstatus" method="post">';
                                           $qq = mysql_query("SELECT * FROM verifikasi WHERE id_Ver = '$_GET[id]'");
                                           $rq = mysql_fetch_array($qq);
+                                          //default tanggal verifikasi
+                                          $rq[tgl_Ver] == "0000-00-00" ? $tglver = "$_SESSION[thn_Login]-01-01" : $tglver = $rq[tgl_Ver];
+
           													echo '<div class="form-horizontal">
                                             <div class="form-group">
                                               <label class="col-sm-2 control-label" for="form-field-1"> Tgl Verifikasi </label>
                                               <div class="col-sm-10">
-                                                <input type="text" id="form-field-1" name="tgl_Ver" value="'.$rq[tgl_Ver].'" placeholder="Tanggal" class="date-picker" data-date-format="yyyy-mm-dd" required/>
+                                                <input type="text" id="form-field-1" name="tgl_Ver" value="'.$tglver.'" placeholder="Tanggal" class="date-picker" data-date-format="yyyy-mm-dd" required/>
                                               </div>
                                             </div>
                                             <div class="form-group">

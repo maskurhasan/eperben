@@ -11,7 +11,7 @@ if($cek==1 OR $_SESSION[UserLevel]=='1') {
 include "../config/koneksi.php";
 include "../config/errormode.php";
 
-include "modmaster.php";
+//include "modmaster.php";
 
   switch ($_GET[act]) {
     default:
@@ -26,7 +26,7 @@ include "modmaster.php";
                       <input type="text" name="table_search" class="form-control" placeholder="Search">
                       <div class="input-group-btn">
                         <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>';
-                        if($_SESSION['UserLevel'] <>3) {
+                        if($_SESSION['UserLevel'] == 1) {
                           echo "<button class='btn btn-sm btn-warning btn-fill' name='tambahsubdak' onClick=\"window.location.href='?module=user&act=add'\"><i class='fa fa-plus'></i> Tambah User</button>";
                         } else {
                           echo "";
@@ -59,7 +59,8 @@ include "modmaster.php";
                                             LEFT JOIN skpd b
                                             ON a.id_Skpd = b.id_Skpd
                                             WHERE a.id_Skpd = '$_SESSION[id_Skpd]'
-                                            AND a.UserLevel != 1");
+                                            AND a.UserLevel != 1 
+                                            AND a.id_User = '$_SESSION[id_User]'");
 
                     } 
                     $no=1;
@@ -76,9 +77,9 @@ include "modmaster.php";
                               <td>$lvl[$level]</td>
                               <td>$Aktiv</td>
                               <td class=align-center><a href='?module=user&act=edit&id=$dt[id_User]'><i class='fa fa-edit fa-lg'></i> Edit</a> ";
-                              if($_SESSION['UserLevel'] <> 3) {
-                                  echo "<a href='?module=user&act=akses&id=$dt[id_User]'><i class='fa fa-tasks fa-lg'></i> Akses Modul</a>";
-                              }
+                              //if($_SESSION['UserLevel'] <> 3) {
+                              //    echo "<a href='?module=user&act=akses&id=$dt[id_User]'><i class='fa fa-tasks fa-lg'></i> Akses Modul</a>";
+                              //}
                               echo '</td>
                             </tr>';
                     }
@@ -106,6 +107,14 @@ include "modmaster.php";
        header('location:../main.php?module=user');
       //echo "MAAF ANDA BUKAN ADMIN";
     } else {
+        if($_GET[error]==1) {
+          echo '<div class="alert alert-danger alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <strong>Error!</strong>  Username yang diminta sudah ada.
+              </div>';
+        } else {
+          echo "";
+        }
     echo '<div class="col-md-8">
             <div class="card">
               <div class="header">
@@ -240,9 +249,24 @@ include "modmaster.php";
 
     break;
     case "edit":
-          $sql = mysql_query("SELECT * FROM user WHERE id_User = '$_GET[id]'");
+          //bedakan jika diedit dari admin dengan user sendiri
+          if($_SESSION[UserLevel]==1) {
+            $sql = mysql_query("SELECT * FROM user WHERE id_User = '$_GET[id]'");
+          } else { 
+            $sql = mysql_query("SELECT * FROM user WHERE id_User = '$_SESSION[id_User]'");
+          }
           $r = mysql_fetch_array($sql);
-         echo '<div class="col-md-8">
+        //ini pesan error
+        if($_GET[error]==1) {
+          echo '<div class="alert alert-danger alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <strong>Error!</strong>  Username yang diminta sudah ada.
+              </div>';
+        } else {
+          echo "";
+        }
+
+        echo '<div class="col-md-8">
                   <div class="card">
                     <div class="header">
                       <h3 class="box-title">Edit User</h3>
@@ -311,18 +335,7 @@ include "modmaster.php";
                                 echo "<option value=$key>$key $value</option>";
                               }
                             }
-                            /*
-                            if($_SESSION['UserLevel']==1) {
-                              echo "<option value='1' $Level1>1 Super Admin</option>
-                                  <option value='2' $Level2>2 Admin SKPD</option>
-                                  <option value='3' $Level3>3 Operator</option>";
-                            } elseif($_SESSION[UserLevel]==2){
-								echo "<option value='2' $Level2>2 Admin SKPD</option>
-										<option value='3' $Level3>3 Operator</option>";
-							}else {
-                              echo "<option value='3' $Level3>3 Operator</option>";
-                            }
-                            */
+                            
                             echo '</select>
                           </div>
                         </div>
@@ -388,11 +401,13 @@ include "modmaster.php";
                         </div>
                       <hr>';
                       } else{
-                        echo "";
+                        echo "<input type='hidden' name='Aktiv' value='1'>";
                       }
                       echo '<div class="box">
                         <div class="col-sm-2"></div>
+                        <input type=hidden name=usernameawal value="'.$r['UserName'].'" />
                         <input type=hidden name=id_User value="'.$r['id_User'].'" />
+                        <input type=hidden name=id_Skpd value="'.$r['id_Skpd'].'" />
                         <input class="btn btn-primary" type="submit" name="simpan" value=Simpan />
                         <input class="btn btn-info" type="reset" value=Reset />
                         <button class="btn btn-info" type="reset" onClick=\'window.history.back()\'><i class="fa fa-arrow-left"></i> Kembali</button>

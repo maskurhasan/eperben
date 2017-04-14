@@ -19,13 +19,34 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                 <div class="card">
                   <div class="header">
                     <div class="row">
-                      <div class="col-md-6"></div>
+                      <div class="col-md-6">';
+
+                      //tombol tambah dari submit form...
+                      //cari ID akun
+                        $query = mysql_query("SELECT MAX(id_Spm) AS maxID
+                                                  FROM spm");
+                        $data = mysql_fetch_array($query);
+                        $idMax = $data['maxID'];
+                        $noUrut = (int) substr($idMax, 1,5);
+                        $noUrut++;
+                        $newID = sprintf("%05s",$noUrut);
+                        //$id_Spm = $newID;
+                        $id_Spm = $idMax + 1;
+
+                      echo "<form method='post' action='modul/act_modspm.php?module=spm&act=pre'>
+                            <input type='hidden' value='$id_Spm' name='id'>
+                          <button class='btn btn-sm btn-warning btn-fill' name='tbh_spm' type='submit' onclick=\"javascript: return confirm('Tambah SPM ?')\"><i class='fa fa-plus'></i> Tambah SPM</button>
+                          </form>";
+
+                      //echo "<button class='btn btn-sm btn-warning btn-fill' name='tbh_spm' type='submit' onClick=\"window.location.href='?module=spm&act=add'\"><i class='fa fa-plus'></i> Tambah SPM</button>";
+
+                      echo '</div>
                       <div class="col-md-6">
                       <div class="input-group pull-right" style="width: 350px;">
                         <input type="text" name="table_search" class="form-control" placeholder="Search">
                         <div class="input-group-btn">
                           <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>';
-                          echo "<button class='btn btn-sm btn-warning btn-fill' name='tambahsubdak' onClick=\"window.location.href='?module=spm&act=add'\"><i class='fa fa-plus'></i> Tambah SPM</button>";
+
                         echo '</div>
                       </div>
                       </div>
@@ -35,7 +56,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                     <table id="tabledata" class="table table-striped table-bordered table-hover">
                       <thead>
                       <tr>
-                        <th></th><th>Nomor</th><th>Tanggal</th>
+                        <th>ID</th><th>Nomor</th><th>Tanggal</th>
                         <th>Jenis</th><th>Anggaran</th><th>Status</th><th></th>
                       </tr>
                       </thead>
@@ -50,13 +71,13 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                       //data yang ditampilkan pada halaman user sesuai dengan role
                       if($_SESSION['UserLevel']==1) {
                         $sql= mysql_query("SELECT a.*,b.nm_Skpd FROM spm a, skpd b
-                                            WHERE a.id_Skpd = b.id_Skpd 
+                                            WHERE a.id_Skpd = b.id_Skpd
                                             ORDER BY a.Tanggal ASC ");
                       } else {
                         $sql= mysql_query("SELECT * FROM spm
-                                            WHERE id_Skpd = '$_SESSION[id_Skpd]' 
+                                            WHERE id_Skpd = '$_SESSION[id_Skpd]'
                                             ORDER BY Tanggal DESC");
-                        
+
                       }
                       $no=1;
       				        while($dt = mysql_fetch_array($sql)) {
@@ -67,15 +88,15 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                         $sttver = $status[$dt[StatusSpm]];
 
                         echo "<tr>
-                                <td>".$no++."</td>
+                                <td>$dt[id_Spm]</td>
                                 <td>$dt[Nomor] </td>
                                 <td>$dt[Tanggal]</td>
                                 <td>$jns_spm[$jns]</td>
                                 <td>".angkrp(totalspm($dt[id_Spm]))."</td>
                                 <td>$sttver</td>
-                                <td class=align-center><a href='?module=spm&act=edit&id=$dt[id_Spm]'><i class='fa fa-edit fa-lg'></i> Edit</a> ";
-                                    echo "<a href='?module=spm&act=kegiatan&id=$dt[id_Spm]'><i class='fa fa-cog fa-lg'></i> Kegiatan</a>  ";
-                                    echo "<a href='?module=spm&act=potongan&id=$dt[id_Spm]'><i class='fa fa-check fa-lg'></i> Potongan</a>  ";
+                                <td class=align-center><a href='?module=spm&act=add&id=$dt[id_Spm]'><i class='fa fa-edit fa-lg'></i> Edit</a> ";
+                                    //echo "<a href='?module=spm&act=kegiatan&id=$dt[id_Spm]'><i class='fa fa-cog fa-lg'></i> Kegiatan</a>  ";
+                                    //echo "<a href='?module=spm&act=potongan&id=$dt[id_Spm]'><i class='fa fa-check fa-lg'></i> Potongan</a>  ";
                                     echo "<a href='modul/act_modspm.php?module=spm&act=hapusspm&id=$dt[id_Spm]' onclick=\"javascript: return confirm('Anda yakin hapus ?')\"><i class='fa fa-trash-o fa-lg'></i> Hapus</a>";
 
                                 echo '</td>
@@ -97,8 +118,9 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
               </div>';
 
   break;
-	case "add" :
-		    echo '<form class="form-horizontal" role="form" method="post" action="modul/act_modspm.php?module=spm&act=add" enctype="multipart/form-data">
+	case "addx" :
+	/*
+  	    echo '<form class="form-horizontal" role="form" method="post" action="modul/act_modspm.php?module=spm&act=add" enctype="multipart/form-data">
                   <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Jenis SPM </label>
                     <div class="col-sm-10">';
@@ -166,7 +188,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                   <div class="form-group">
 										<label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Upload SPM </label>
 										<div class="col-sm-10">
-                      <input type="file" accept="image/*" name="fl_Spm" class="col-xs-10 col-sm-5" required>
+                      <input type="file" accept=".jpg,.png,.pdf" id="fl_Spm" name="fl_Spm" class="col-xs-10 col-sm-5" required>
 										</div>
 									</div>
                   <div class="form-group">
@@ -186,11 +208,19 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
 										<div class="col-sm-10">
                       <input type="file" accept="image/*" name="fl_Spp3" class="col-xs-10 col-sm-5" required>
 										</div>
-									</div>';
+									</div>
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label>
+                    <div class="col-sm-10">';
+                      echo "<button class='btn btn-sm btn-warning btn-fill' name='tbh_spm' type='submit' onClick=\"window.location.href='?module=spm&act=kegiatan&id=$_GET[id]'\"><i class='fa fa-plus'></i> Tambah Kegiatan</button>";
+                    echo '</div>
+                  </div>';
+
                   echo "<input type='hidden' name='id_Skpd' value='$_SESSION[id_Skpd]'>";
+                  echo "<input type='hidden' name='id' value='$_GET[id]'>";
 									echo '<div class="clearfix form-actions">
 										<div class="col-md-offset-3 col-md-9">
-											<button class="btn btn-primary" type="submit" name="simpan">
+											<button class="btn btn-primary" type="submit" id="simpan" name="simpan">
 												<i class="ace-icon fa fa-check bigger-110"></i>
 												Simpan
 											</button>
@@ -212,9 +242,9 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
 									<div class="hr hr-24"></div>
                   </form>
 								';
-
+  */
 	break;
-  case 'edit':
+  case 'add':
       if($_SESSION['UserLevel']==1) {
         $sql = mysql_query("SELECT * FROM ttdbukti
                               WHERE id_Spm = '$_GET[id]'");
@@ -231,7 +261,12 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
         $r = mysql_fetch_array($sql);
         return $r[total];
       }
-      echo '<form class="form-horizontal" role="form" method="post" action="modul/act_modspm.php?module=spm&act=edit">
+      //jika tanggal belum ditentukan gunankan default tahun LOGIN
+      $r[Tanggal] == "0000-00-00" ? $tglspm = "$_SESSION[thn_Login]-01-01" : $tglspm = $r[Tanggal];
+      //jangan munculkan tombol view document jika belum diinput
+      $ckfile = array('spm' => $r[fl_Spm],'spp1' => $r[fl_Spp1],'spp2' => $r[fl_Spp2],'spp3' => $r[fl_Spp3]);
+
+      echo '<form class="form-horizontal" role="form" method="post" action="modul/act_modspm.php?module=spm&act=add" enctype="multipart/form-data">
             <div class="form-group">
               <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Jenis SPM </label>
               <div class="col-sm-10">';
@@ -253,19 +288,13 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
               <div class="col-sm-10">
                 <input type="text" id="form-field-1" name="Nomor" placeholder="Nomor SPM" class="col-xs-10 col-sm-5" value="'.$r[Nomor].'" required/>
                 <label class="col-sm-2 control-label" for="form-field-1"> Tanggal</label>
-                <input type="text" id="form-field-1" name="Tanggal" placeholder="Tanggal" class="date-picker" data-date-format="yyyy-mm-dd"  value="'.$r[Tanggal].'" required/>
+                <input type="text" id="form-field-1" name="Tanggal" placeholder="Tanggal" class="date-picker" data-date-format="yyyy-mm-dd"  value="'.$tglspm.'" required/>
               </div>
             </div>
             <div class="form-group">
               <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Anggaran </label>
               <div class="col-sm-10">
                 <input type="text" id="form-field-1" placeholder="Anggaran SPM" name="Anggaran" class="col-xs-10 col-sm-5" value="'.$r[Anggaran].'"  required/>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Jenis Kegiatan </label>
-              <div class="col-sm-10">
-                <input type="text" id="form-field-1" placeholder="Username" name="JnsKegiatan" class="col-xs-10 col-sm-5"/>
               </div>
             </div>
             <div class="form-group">
@@ -328,8 +357,29 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
               <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Upload SPP 3 </label>
               <div class="col-sm-10">
                 <input type="file" accept="image/*" name="fl_Spp3" class="col-xs-10 col-sm-4"><a class="btn btn-warning btn-xs" target="_blank" href="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp3].'"><i class="fa fa-image"> </i>Tampilkan</a>
+                <input type="hidden" name="al_spm" value="'.$r[fl_Spm].'">
+                <input type="hidden" name="al_spp1" value="'.$r[fl_Spp1].'">
+                <input type="hidden" name="al_spp2" value="'.$r[fl_Spp2].'">
+                <input type="hidden" name="al_spp3" value="'.$r[fl_Spp3].'">
+                <input type="hidden" name="al_lain" value="'.$r[fl_lain].'">
               </div>
             </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Dokumen Lainnya (.pdf) </label>
+              <div class="col-sm-10">
+                <input type="file" accept="image/*" name="fl_lain" class="col-xs-10 col-sm-4"><a class="btn btn-warning btn-xs" target="_blank" href="media/lain/'.$_SESSION[thn_Login].'/'.$r[fl_lain].'"><i class="fa fa-image"> </i>Tampilkan</a>
+              </div>
+            </div>
+            <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> </label>
+                    <div class="col-sm-10">';
+                      //echo "<button class='btn btn-sm btn-warning btn-fill' name='tbh_spm' type='button' onClick=\"window.location.href='?module=spm&act=kegiatan&id=$_GET[id]'\"><i class='fa fa-plus'></i> Tambah Kegiatan</button>  ";
+                      //echo "<button class='btn btn-sm btn-success btn-fill' name='tbh_spm' type='button' onClick=\"window.location.href='?module=spm&act=potongan&id=$_GET[id]'\"><i class='fa fa-plus'></i> Tambah Potongan</button>  ";
+                      echo "<a class='btn btn-sm btn-primary btn-fill' name='tbh_spm' type='button' href='?module=spm&act=kegiatan&id=$_GET[id]' target='_blank'><i class='fa fa-plus'></i> Tambah Kegiatan</a> ";
+                      echo "<a class='btn btn-sm btn-success btn-fill' name='tbh_spm' type='button' href='?module=spm&act=potongan&id=$_GET[id]' target='_blank'><i class='fa fa-plus'></i> Tambah Potongan</a> ";
+                      echo "<a class='btn btn-sm btn-danger btn-fill' name='tbh_spm' type='button' href='modul/uploadberkas.php' onClick=\"popup(this.href); return false\"><i class='fa fa-plus'></i> Upload Berkas</a>";
+                    echo '</div>
+                  </div>
             <div class="form-group">
               <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Status SPM </label>
               <div class="col-sm-10">';
@@ -392,9 +442,8 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                     <div class="col-md-6">
                     <div class="input-group pull-right" style="width: 350px;">
                       <input type="text" name="table_search" class="form-control" placeholder="Search">
-                      <div class="input-group-btn">
-                        <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>';
-                        echo "<a href='?module=spm' class='btn btn-sm btn-danger btn-fill' role='button' id='id_Spm'><i class='fa fa-plus'></i> Kembali</a>";
+                      <div class="input-group-btn">';
+                        echo "<button class='btn btn-sm btn-danger btn-fill' role='button' id='id_Spm' onclick=\"javascript:window.close()\"><i class='fa fa-close'></i> Tutup</button>";
                         //munculkan tombol jika spm masih draf
                         if($r[StatusSpm] == 0) {
                           echo "<button class='btn btn-sm btn-warning btn-fill' role='button' href='#modal-form' id='id_Spm' value='$r[id_Spm]' data-toggle='modal' id='id_Spm' onClick='md_pengbud(this.value)'><i class='fa fa-plus'></i> Tambah Kegiatan</button>";
@@ -478,8 +527,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                               <td>".angkrp($dt[Nilai])."</td>
                               <td>$sttver</td>
                               <td class=align-center><button role='button' class='btn btn-minier btn-success' href='#modal-form-edit' id='id_Rincspm' value='$dt[id_Rincspm]' data-toggle='modal' onClick='md_editpengbud(this.value)'><i class='fa fa-edit fa-lg'></i> Edit</button> ";
-                                  echo "<button href='#'  class='btn btn-minier btn-danger'><i class='fa fa-trash-o fa-lg'></i> Hapus</button>";
-
+                                  echo "<a  class='btn btn-minier btn-danger' href='modul/act_modspm.php?module=spm&act=datakegiatandel&id=$dt[id_Rincspm]&idx=$_GET[id]' onclick=\"javascript: return confirm('Anda yakin hapus ?')\"><i class='fa fa-trash-o fa-lg'></i> Hapus</a>";
                               echo '</td>
                             </tr>';
                     }
@@ -598,9 +646,8 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                     <div class="col-md-6">
                     <div class="input-group pull-right" style="width: 350px;">
                       <input type="text" name="table_search" class="form-control" placeholder="Search">
-                      <div class="input-group-btn">
-                        <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>';
-                        echo "<a href='?module=spm' class='btn btn-sm btn-danger btn-fill' role='button' id='id_Spm'><i class='fa fa-undo'></i> Kembali</a>";
+                      <div class="input-group-btn">';
+                        echo "<button class='btn btn-sm btn-danger btn-fill' role='button' id='id_Spm' onclick=\"javascript:window.close()\"><i class='fa fa-close'></i> Tutup</button>";
                         //munculkan tombol jika spm masih draf
                         if($r[StatusSpm] == 0) {
                           echo "<button class='btn btn-sm btn-warning btn-fill' role='button' href='#modal-form' id='id_Spm' value='$r[id_Spm]' data-toggle='modal' id='id_Spm' onClick='md_potongan(this.value)'><i class='fa fa-plus'></i> Tambah Potongan</button>";
@@ -613,7 +660,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                   </div>
                 </div>
                 <div class="content table-responsive">
-                  <table id="tabledata" class="table table-striped table-bordered table-hover table-responsive">
+                  <table id="tabledata" class="table table-striped table-bordered">
                     <thead>
                     <tr>
                       <th></th><th>Jenis Potongan</th>
@@ -648,8 +695,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                               <td>$jsp</td>
                               <td>".angkrp($dt[NilaiPotongan])."</td>
                               <td class=align-center><button role='button' class='btn btn-minier btn-success' href='#modal-form-edit' id='id_PotonganSpm' value='$dt[id_PotonganSpm]' data-toggle='modal' onClick='md_editpotongan(this.value)'><i class='fa fa-edit fa-lg'></i> Edit</button> ";
-                                  echo "<button href='#'  class='btn btn-minier btn-danger'><i class='fa fa-trash-o fa-lg'></i> Hapus</button>";
-
+                                  echo "<a  class='btn btn-minier btn-danger' href='modul/act_modspm.php?module=spm&act=delpotongan&id=$dt[id_PotonganSpm]&idx=$_GET[id]' onclick=\"javascript: return confirm('Anda yakin hapus ?')\"><i class='fa fa-trash-o fa-lg'></i> Hapus</a>";
                               echo '</td>
                             </tr>';
                     }
@@ -909,4 +955,35 @@ $(".batal").click(function(event) {
         }
     });
 
+//validasi file type dan size
+$('#simpan').click( function() {
+    //check whether browser fully supports all File API
+    if (window.File && window.FileReader && window.FileList && window.Blob)
+    {
+        //get the file size and file type from file input field
+        var fsize = $('#fl_Spm')[0].files[0].size;
+        var ftype = $('#fl_Spm')[0].files[0].type;
+        var fname = $('#fl_Spm')[0].files[0].name;
+
+       switch(ftype)
+        {
+            case 'image/png':
+            case 'image/gif':
+            case 'image/jpeg':
+            case 'image/pjpeg':
+                alert("Acceptable image file!");
+                break;
+            default:
+                alert('Unsupported File!');
+        }
+
+    }else{
+        alert("Please upgrade your browser, because your current browser lacks some new features we need!");
+    }
+});
+
+//popup upload file
+function popup(url) {
+  popupWindow = window.open(url,'popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+}
 </script>

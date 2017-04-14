@@ -28,7 +28,8 @@ if ($act == "add" and $module == "verifikasi") {
         //}
         if ($qry)
             {
-                header('location:../main.php?module=verifikasi&act=add&id='.$id_Spm.'');
+                //header('location:../main.php?module=verifikasi&act=add&id='.$id_Spm.'');
+                header('location:../main.php?module=verifikasi');
             }
         else
             {

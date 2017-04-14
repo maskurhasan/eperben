@@ -18,7 +18,7 @@ if (empty($_SESSION[UserName]) AND empty($_SESSION[PassWord])) {
   										<?php echo $_SESSION['nm_Lengkap'] ?>
 
   									</strong>,
-  	                 Sistem Informasi Agenda Kegiatan Kabupaten Luwu Utara
+  	                 E-Perbendaharaan Kabupaten Luwu Utara
   								</div>
 
                   <div class="row">
