@@ -282,7 +282,7 @@ foreach ($file as $key => $value) {
 
           	if ($qry)
           			{
-          					header('location:../main.php?module=spm&act=kegiatan&id='.$id_Spm.'');
+          					header('location:../main.php?module=spm&act=add&id='.$id_Spm.'');
           			}
           	else
           			{
@@ -291,11 +291,11 @@ foreach ($file as $key => $value) {
           } else {
             //maaf kegiatan telah ada
             echo "<script type=text/javascript>window.alert('Error : Kegiatan SPM telah dipilih')
-                				window.location.href='../main.php?module=spm&act=kegiatan&id=$id_Spm'</script>";
+                				window.location.href='../main.php?module=spm&act=add&id=$id_Spm'</script>";
           }
         } else {
           echo "<script type=text/javascript>window.alert('Error : Maaf Anggaran Kegiatan melebihi Target SPP ".angkrp($target)."')
-                      window.location.href='../main.php?module=spm&act=kegiatan&id=$id_Spm'</script>";
+                      window.location.href='../main.php?module=spm&act=add&id=$id_Spm'</script>";
         }
       } else {
         echo "error simpan";
@@ -320,7 +320,7 @@ foreach ($file as $key => $value) {
 
             if ($qry)
                 {
-                    header('location:../main.php?module=spm&act=kegiatan&id='.$id_Spm.'');
+                    header('location:../main.php?module=spm&act=add&id='.$id_Spm.'');
                 }
             else
                 {
@@ -328,11 +328,11 @@ foreach ($file as $key => $value) {
                 }
           } else {
             echo "<script type=text/javascript>window.alert('Error : Maaf Anggaran Kegiatan melebihi Target SPP ".angkrp($target)."')
-                        window.location.href='../main.php?module=spm&act=kegiatan&id=$id_Spm'</script>";
+                        window.location.href='../main.php?module=spm&act=add&id=$id_Spm'</script>";
           }
         } else {
             echo "<script type=text/javascript>window.alert('Error : Maaf SPM sudah Final')
-                				window.location.href='../main.php?module=spm&act=kegiatan&id=$id_Spm'</script>";
+                				window.location.href='../main.php?module=spm&act=add&id=$id_Spm'</script>";
         }
       } else {
         echo "error simpan";
