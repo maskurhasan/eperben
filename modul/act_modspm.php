@@ -39,7 +39,7 @@ if($act =="pre" and $module == "spm") {
             }
   //exit();
 } elseif ($act == "add" and $module == "spm") {
-
+/*
 //file spm
 $tahun = $_SESSION[thn_Login];
 $gantinamaspm = $id_Skpd."_".acaknmfile()."_spm";
@@ -97,7 +97,7 @@ foreach ($file as $key => $value) {
     }
     $pindah_foto = move_uploaded_file($_FILES[$value][tmp_name],$namafolder.$gantinama.'.'.$extension);
 }
-
+*/
     if(isset($_POST[simpan])) {
       $TotalSmntara = $_POST[TotalSmntara];
       if($StatusSpm == 1 AND $TotalSmntara == $Anggaran) {
@@ -110,11 +110,6 @@ foreach ($file as $key => $value) {
                                               KepalaSkpd='$KepalaSkpd',
                                               Bendahara='$Bendahara',
                                               Keterangan='$Keterangan',
-                                              fl_spm='$nm_file_spm',
-                                              fl_spp1='$nm_file_spp1',
-                                              fl_spp2='$nm_file_spp2',
-                                              fl_spp3='$nm_file_spp3',
-                                              fl_lain='$nm_file_lain',
                                               StatusSpm = 1,
                                               Create_at=now()
                                       WHERE id_Spm ='$_POST[id_Spm]'");
@@ -139,11 +134,6 @@ foreach ($file as $key => $value) {
                                               KepalaSkpd='$KepalaSkpd',
                                               Bendahara='$Bendahara',
                                               Keterangan='$Keterangan',
-                                              fl_spm='$nm_file_spm',
-                                              fl_spp1='$nm_file_spp1',
-                                              fl_spp2='$nm_file_spp2',
-                                              fl_spp3='$nm_file_spp3',
-                                              fl_lain='$nm_file_lain',
                                               StatusSpm = 0,
                                               Create_at=now()
                                       WHERE id_Spm ='$_POST[id_Spm]'");
@@ -429,7 +419,7 @@ foreach ($file as $key => $value) {
                                                         WHERE id_PotonganSpm = '$id_PotonganSpm'");
             if ($qry)
                 {
-                    header('location:../main.php?module=spm&act=potongan&id='.$id_Spm.'');
+                    header('location:../main.php?module=spm&act=add&id='.$id_Spm.'');
                 }
             else
                 {
@@ -437,11 +427,11 @@ foreach ($file as $key => $value) {
                 }
           } else {
             echo "<script type=text/javascript>window.alert('Error : Maaf Potongan SPM Kegiatan melebihi Target SPP ".angkrp($TotalSmntara)."')
-                        window.location.href='../main.php?module=spm&act=potongan&id=$id_Spm'</script>";
+                        window.location.href='../main.php?module=spm&act=add&id=$id_Spm'</script>";
           }
         } else {
             echo "<script type=text/javascript>window.alert('Error : Maaf SPM sudah Final')
-                				window.location.href='../main.php?module=spm&act=kegiatan&id=$id_Spm'</script>";
+                				window.location.href='../main.php?module=spm&act=add&id=$id_Spm'</script>";
         }
       } else {
         echo "error simpan";
@@ -465,7 +455,7 @@ foreach ($file as $key => $value) {
             $qry = mysql_query("DELETE FROM potonganspm WHERE id_PotonganSpm = '$id_PotonganSpm'");
             if ($qry)
                 {
-                    header('location:../main.php?module=spm&act=potongan&id='.$_GET[idx].'');
+                    header('location:../main.php?module=spm&act=add&id='.$_GET[idx].'');
                 }
             else
                 {
@@ -474,7 +464,7 @@ foreach ($file as $key => $value) {
 
         } else {
             echo "<script type=text/javascript>window.alert('Error : Maaf SPM sudah Final')
-                        window.location.href='../main.php?module=spm&act=kegiatan&id=$_GET[idx]'</script>";
+                        window.location.href='../main.php?module=spm&act=add&id=$_GET[idx]'</script>";
         }
       } else {
         echo "error simpan";
@@ -500,4 +490,114 @@ foreach ($file as $key => $value) {
         }
 
 
+} elseif($act == "upload" and $module == "spm"){
+      //data rincian spm
+        $id_Cklist = $_POST[id_Cklist];
+        $Keterangan = $_POST[Keterangan];
+
+      	$nm_file = basename($_FILES['fileupload']['name']);
+      	$extension = end(explode(".", $nm_file));
+      	$gantinama = $id_Skpd."_".acaknmfile()."_".$_SESSION[thn_Login].".".$extension;
+      	$nm_folder = "../media/$_SESSION[thn_Login]/"; //nama folder simpan gambar
+
+      	$pindah_foto = move_uploaded_file($_FILES['fileupload']['tmp_name'], $nm_folder.$gantinama);
+      	if(isset($_POST[simpanupload]) AND !empty($nm_file)) {
+          		$qsy = mysql_query("INSERT INTO uploadberkas (id_Cklist,id_Spm, Keterangan, fileupload, Create_at)
+          										VALUES ('$id_Cklist','$id_Spm', '$Keterangan', '$gantinama', now())");
+          		if($qsy) {
+          			header('Location:../main.php?module=spm&act=add&id='.$id_Spm.'');
+          		} else {
+          			echo mysql_error();
+          		}
+        } else {
+          //header('Location:../main.php?module=spm&act=add&id='.$id_Spm.'');
+          echo "gagalupload";
+        }
+
+} elseif($act == "hapus" and $module == "spm"){
+        $xx = $_POST[namafile];
+        echo $xx;
+        exit("hapus");
+      //data rincian spm
+        $id_Cklist = $_POST[id_Cklist];
+        $Keterangan = $_POST[Keterangan];
+
+      	$nm_file = basename($_FILES['fileupload']['name']);
+      	$extension = end(explode(".", $nm_file));
+      	$gantinama = $id_Skpd."_".acaknmfile()."_".$_SESSION[thn_Login].".".$extension;
+      	$nm_folder = "../media/$_SESSION[thn_Login]/"; //nama folder simpan gambar
+
+      	$pindah_foto = move_uploaded_file($_FILES['fileupload']['tmp_name'], $nm_folder.$gantinama);
+      	if(isset($_POST[simpanupload]) AND !empty($nm_file)) {
+          		$qh = mysql_query("DELETE FROM uploadberkas WHERE id_Upload='$_GET[id]'");
+              if($qh) {
+                chdir('../../'.$nm_folder);
+                $hapusfile = unlink($nm_file);
+                if($hapusfile == "1") {
+                  header('Location:../../fo/?module=permohonan&act=main&id='.$rd[id_Register].'');
+                } else {
+                  header('Location:../../fo/?module=permohonan&act=main&id='.$rd[id_Register].'');
+                }
+              }
+        } else {
+          //header('Location:../main.php?module=spm&act=add&id='.$id_Spm.'');
+          echo "gagalupload";
+        }
+        //ini contoh delete
+        $qd = mysql_query("SELECT * FROM co_syaratdokumen WHERE id_SyaratDokumen = $_GET[id]");
+      	$rd = mysql_fetch_array($qd);
+      	$nm_file = end(explode("/", $rd['nm_FileSyarat']));
+      	$path = explode("/",$rd['nm_FileSyarat']);
+      	$nm_folder = $path[0].'/'.$path[1];
+      	if(!empty($_GET[id])) {
+      		$qh = mysql_query("DELETE FROM co_syaratdokumen WHERE id_SyaratDokumen = $_GET[id]");
+      		if($qh) {
+      			chdir('../../'.$nm_folder);
+      			$hapusfile = unlink($nm_file);
+      			if($hapusfile == "1") {
+      				header('Location:../../fo/?module=permohonan&act=main&id='.$rd[id_Register].'');
+      			} else {
+      				//echo "Gagal dihapus";
+      				header('Location:../../fo/?module=permohonan&act=main&id='.$rd[id_Register].'');
+      			}
+      		}
+      	}
+
+} elseif($act=="status" AND $module=="spm") {
+  if(isset($_POST[simpan])) {
+    $TotalSmntara = $_POST[TotalSmntara];
+    if($StatusSpm == 1 AND $TotalSmntara == $Anggaran) {
+
+      $qry = mysql_query("UPDATE spm SET StatusSpm = 1,
+                                              Create_at=now()
+                                      WHERE id_Spm ='$id_Spm'");
+
+      if ($qry)
+          {
+              header('location:../main.php?module=spm');
+          }
+      else
+          {
+              echo mysql_error();
+          }
+    } elseif($StatusSpm == 0) {
+      $qry = mysql_query("UPDATE spm SET StatusSpm = 0,
+                                       Create_at=now()
+                               WHERE id_Spm ='$id_Spm'");
+      if ($qry)
+        {
+          header('location:../main.php?module=spm');
+        }
+      else
+        {
+          echo mysql_error();
+        }
+
+    } else {
+      echo "<script type=text/javascript>window.alert('Error : Maaf Anggaran Kegiatan Tidak sesuai Target SPP ".angkrp($Anggaran)."')
+                  window.location.href='../main.php?module=spm&act=edit&id=$id_Spm'</script>";
+    }
+  } else {
+    echo "gagal simpan status";
+  }
 }

@@ -797,17 +797,40 @@ echo '<div class="col-sm-12 widget-container-col">
                           echo '</div>
 
                           <div id="dropdown14" class="tab-pane">
-                              <form action="modul/act_modverifikasi.php?module=verifikasi&act=lampver" method="post">
                                 <p> Upload Dokumen Pengajuan SPM </p>';
-
-                                //tampilkan data dari table verifikasi
-                                $q1 = mysql_query("SELECT a.Jenis,b.id_Ver,b.StatusVer FROM spm a, verifikasi b
-                                                    WHERE b.id_Ver = '$_GET[id]'
-                                                    AND a.id_Spm = b.id_Spm ");
-                                $r1 = mysql_fetch_array($q1);
-
                                 //untuk daftar check list
-                                $q = mysql_query("SELECT * FROM cklist
+                                //fungsi isi Keterangan dan tampilan nama File
+                                function ck_document($id_Cklist, $id_Spm,$aksi,$str) {
+                                	$q = mysql_query("SELECT * FROM uploadberkas
+                                                      WHERE id_Cklist = '$id_Cklist'
+                                                      AND id_Spm = '$id_Spm'");
+                                	$r = mysql_fetch_array($q);
+                                	$hit = mysql_num_rows($q);
+                                	if($hit <= 0) {
+                                		if($str == 'Cek') {
+                                			$ck = '<input type="checkbox" name="checkbox">';
+                                		} elseif ($str == 'File') {
+                                			$ck = '<input type="file" name="fileupload" id="fileupload" accept="image/*" value="">';
+                                		} elseif ($str == 'Button') {
+                                			$ck = '<button type="submit" name="simpanupload" class="btn btn-minier btn-primary"><i class="fa fa-upload"></i> Upload</button>';
+                                		} else {
+                                      $ck = '<input name="Keterangan" type="text" value="'.$r[Keterangan].'">';
+                                    }
+                                	} else {
+                                    if($str == 'Cek') {
+                                			$ck = '<input type="checkbox" name="checkbox">';
+                                		} elseif ($str == 'File') {
+                                      $ck = '<a href="media/'.$_SESSION[thn_Login].'/'.$r[fileupload].'" target="_blank" class="btn btn-success btn-minier">View</a>';
+                                		} elseif ($str == 'Button') {
+                                      $ck = '<a href="modul/act_modspm.php?module=spm&act=hapus&id='.$r[id_Upload].'" class="btn btn-minier btn-danger"><i class="fa fa-trash-o"></i> Delete</a>';
+                                    } else {
+                                      $ck = $r[Keterangan]."<input type='hidden' name='namafile' value='$r[fileupload]'>";
+                                      $ckxx = '<input type="text" name="namafile" value="'.$r[fileupload].'">';
+                                    }
+                                	}
+                                	return $ck;
+                                }
+                                $q1 = mysql_query("SELECT * FROM cklist
                                                   WHERE Jenis = '$r[Jenis]'
                                                   AND Aktiv =1");
 
@@ -822,62 +845,39 @@ echo '<div class="col-sm-12 widget-container-col">
                                           <th></th>
                                         </tr>
                                       </thead>';
-                                      while($r=mysql_fetch_array($q)) {
-                                        echo "<input type=hidden name='id_Cklist[]' value='$r[id_Cklist]'>";
+                                      while($r1=mysql_fetch_array($q1)) {
+                                        //form upload dokumen pdf dan img
+                                        echo '<form class="form-horizontal" role="form" method="post" action="modul/act_modspm.php?module=spm&act=upload" enctype="multipart/form-data">';
+                                        echo "<input type=hidden name='id_Cklist' value='$r1[id_Cklist]'>";
+                                        echo "<input type=hidden name='id_Skpd' value='$_SESSION[id_Skpd]'>";
+                                        echo "<input type=hidden name='id_Spm' value='$r[id_Spm]'>";
                                         echo '<tr>
                                           <td>'.$no++.'</td>
-                                          <td>'.$r[nm_List].'</td>
-                                          <td><input name="Isian[]" type="text" value="'.$r[Isian].'"></td>
-                                          <td><input type="file" class="form-control"></td>
-                                          <td><button type="submit" class="btn btn-minier btn-primary"><i class="fa fa-upload"></i> Upload</button>
+                                          <td>'.$r1[nm_List].'</td>
+                                          <td>'.ck_document($r1[id_Cklist],$r[id_Spm],"aksi","ket").'</td>
+                                          <td>'.ck_document($r1[id_Cklist],$r[id_Spm],"aksi","File").'</td>
+                                          <td>'.ck_document($r1[id_Cklist],$r[id_Spm],"aksi","Button").'</td>
                                         </tr>';
+                                        echo "</form>";
                                       }
                                 echo '</table>
-                              <div class="clearfix form-actions">
-                                <div class="col-md-offset-3 col-md-9">
-                                  <input type="hidden" name="id_Ver" value="'.$_GET[id].'">
-                                  <input type="hidden" name="StatusVer" value="'.$r1[StatusVer].'">
-                                  <button class="btn btn-primary" type="submit" name="Simpan">
-                                    <i class="ace-icon fa fa-check bigger-110"></i>
-                                    Simpan
-                                  </button>
-                                  &nbsp; &nbsp; &nbsp;
-                                  <button class="btn" type="reset">
-                                    <i class="ace-icon fa fa-refresh bigger-110"></i>
-                                    Reset
-                                  </button>
-
-                                  &nbsp; &nbsp; &nbsp;
-                                  <a href="?module=spm" class="btn btn-success" >
-                                    <i class="ace-icon fa fa-undo bigger-110"></i>
-                                    Kembali
-                                  </a>
-                                </div>
-                              </div>
-                            </form>
                           </div>
 
                           <div id="status" class="tab-pane">';
                             //ini untuk mengubah status dari spm yg diajukan
                             echo '<form action="modul/act_modspm.php?module=spm&act=status" method="post">';
-                                  $qq = mysql_query("SELECT * FROM verifikasi WHERE id_Ver = '$_GET[id]'");
-                                  $rq = mysql_fetch_array($qq);
-                                  //default tanggal verifikasi
-                                  $rq[tgl_Ver] == "0000-00-00" ? $tglver = "$_SESSION[thn_Login]-01-01" : $tglver = $rq[tgl_Ver];
+                            echo "<input type='hidden' name='id_Skpd' value='$_SESSION[id_Skpd]'>";
+                            echo "<input type='hidden' name='id_Spm' value='$r[id_Spm]'>";
+                            echo "<input type='hidden' name='Anggaran' value='$r[Anggaran]'>";
+                            echo '<input type="hidden" name="TotalSmntara" value="'.totalspm($r['id_Spm']).'">';
 
                             echo '<div class="form-horizontal">
+
                                     <div class="form-group">
-                                      <label class="col-sm-2 control-label" for="form-field-1"> Tgl Verifikasi </label>
-                                      <div class="col-sm-10">
-                                        <input type="text" id="form-field-1" name="tgl_Ver" value="'.$tglver.'" placeholder="Tanggal" class="date-picker" data-date-format="yyyy-mm-dd" required/>
-                                      </div>
-                                    </div>
-                                    <div class="form-group">
-                                      <label for="inputPassword3" class="col-sm-2 control-label">Status Verifikasi</label>
+                                      <label for="inputPassword3" class="col-sm-2 control-label">Status SPM</label>
                                       <div class="col-sm-10">';
                                       $status = array(0=>'Draf',1=>'Final');
-                                      echo "<select name='StatusSpm' class='col-xs-10 col-sm-5' id='form-field-1' required>
-                                              <option value=''>-Pilih Status-</option>";
+                                      echo "<select name='StatusSpm' class='col-xs-10 col-sm-5' id='form-field-1' required>";
                                             foreach ($status as $key => $value) {
                                               if($key == $r[StatusSpm]) {
                                                 echo "<option value='$key' selected>$value</option>";

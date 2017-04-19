@@ -230,9 +230,9 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                             AND c.id_User = '$_SESSION[id_User]'
                             AND c.id_Ver = '$_GET[id]'";
         $q = mysql_query($sql);
-        $dt = mysql_fetch_array($q);
+        $r = mysql_fetch_array($q);
         $jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
-        $jns = $dt['Jenis'];
+        $jns = $r['Jenis'];
 
 
 		    echo '<div class="col-md-6">
@@ -246,19 +246,19 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
           <div class="profile-info-row">
             <div class="profile-info-name"> Nomor</div>
             <div class="profile-info-value">
-              '.$dt['Nomor'].'  Tanggal '.$dt['Tanggal'].'
+              '.$r['Nomor'].'  Tanggal '.$r['Tanggal'].'
             </div>
           </div>
           <div class="profile-info-row">
             <div class="profile-info-name"> Anggaran </div>
             <div class="profile-info-value">
-              '.angkrp($dt['Anggaran']).'
+              '.angkrp($r['Anggaran']).'
             </div>
           </div>
           <div class="profile-info-row">
             <div class="profile-info-name"> SKPD </div>
             <div class="profile-info-value">
-              '.$dt['nm_Skpd'].'
+              '.$r['nm_Skpd'].'
             </div>
           </div>
         </div>
@@ -275,19 +275,19 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
           <div class="profile-info-row">
             <div class="profile-info-name"> Nomor</div>
             <div class="profile-info-value">
-              '.$dt['Nomor'].'  Tanggal '.$dt['Tanggal'].'
+              '.$r['Nomor'].'  Tanggal '.$r['Tanggal'].'
             </div>
           </div>
           <div class="profile-info-row">
             <div class="profile-info-name"> Anggaran </div>
             <div class="profile-info-value">
-              '.angkrp($dt['Anggaran']).'
+              '.angkrp($r['Anggaran']).'
             </div>
           </div>
           <div class="profile-info-row">
             <div class="profile-info-name"> SKPD </div>
             <div class="profile-info-value">
-              '.$dt['nm_Skpd'].'
+              '.$r['nm_Skpd'].'
             </div>
           </div>
         </div>
@@ -299,7 +299,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
         echo '<div class="col-sm-12 widget-container-col">
 										<div class="widget-box transparent">
 											<div class="widget-header">
-												<h4 class="widget-title lighter">Transparent Box</h4>
+												<h4 class="widget-title lighter">Transparent Box </h4>
 
 												<div class="widget-toolbar no-border">
 													<a href="#" data-action="settings">
@@ -326,7 +326,11 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
           										<div class="tabbable">
           											<ul class="nav nav-tabs padding-12 tab-color-blue background-blue" id="myTab4">
           												<li class="active">
-          													<a data-toggle="tab" href="#home4"><i class="ace-icon fa fa-list"></i> Data Program Kegiatan</a>
+          													<a data-toggle="tab" href="#home4"><i class="ace-icon fa fa-list"></i> Data Program Kegiatan </a>
+          												</li>
+
+                                  <li>
+          													<a data-toggle="tab" href="#potongan"><i class="ace-icon fa fa-list"></i> Potongan SPM</a>
           												</li>
 
           												<li>
@@ -350,7 +354,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                     <table id="tabledata" class="table table-striped table-bordered table-hover table-responsive">
                                       <thead>
                                       <tr>
-                                        <th></th><th>Kegiatan</th>
+                                        <th></th><th>Kegiatan '.$dt[id_Spm].'</th>
                                         <th>Anggaran</th><th>Nilai SPM</th>
                                       </tr>
                                       </thead>
@@ -388,23 +392,18 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                       }
 
                                       if($_SESSION['UserLevel']==1) {
-                                        $sql= mysql_query("SELECT a.*,b.nm_Skpd FROM spm a, skpd b
+                                        $sql1= mysql_query("SELECT a.*,b.nm_Skpd FROM spm a, skpd b
                                                             WHERE a.id_Skpd = b.id_Skpd");
                                       } else {
-                                        $sql= mysql_query("SELECT b.*,d.nm_Kegiatan,c.Nilai,c.id_Rincspm FROM spm a,datakegiatan b,rincspm c,kegiatan d
+                                        $sql1= mysql_query("SELECT b.*,d.nm_Kegiatan,c.Nilai,c.id_Rincspm FROM spm a,datakegiatan b,rincspm c,kegiatan d
                                                             WHERE a.id_Spm = c.id_Spm
                                                             AND c.id_DataKegiatan = b.id_DataKegiatan
                                                             AND b.id_Kegiatan = d.id_Kegiatan
-                                                            AND a.id_Spm = '$dt[id_Spm]'");
+                                                            AND a.id_Spm = '$r[id_Spm]'");
                                       }
 
                                       $no=1;
-                                      while($dt = mysql_fetch_array($sql)) {
-                                        //$jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
-                                        //$jns = $dt['Jenis'];
-
-                                        //$status = array(0=>'<span class="label label-warning arrowed-in">Draf</span>',1=>'<span class="label label-success arrowed">Final</span>',2=>'<span class="label label-danger">Ditolak</span>');
-                                        //$sttver = $status[$dt[StatusSpm]];
+                                      while($dt = mysql_fetch_array($sql1)) {
 
                                         echo "<tr>
                                                 <td>".$no++."</td>
@@ -414,7 +413,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                               </tr>";
                                       }
 
-                                    echo '<tbody>';
+                                    echo '</tbody>';
                                     echo '<tfoot>
                                             <tr>
                                               <td></td>
@@ -428,78 +427,101 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                   echo '</div>
 
           												<div id="profile4" class="tab-pane">
-          													<p>Lampiran Bukti SPM / SPP</p>
-                                          <ul class="ace-thumbnails clearfix">';
-                        										$q = mysql_query("SELECT a.fl_Spm,a.fl_Spp1,a.fl_Spp2,a.fl_Spp3 FROM spm a, verifikasi b
-                                                              WHERE a.id_Spm = b.id_Spm
-                                                              AND b.id_Ver = '$_GET[id]'");
-                                            $r = mysql_fetch_array($q);
-                                            echo '<li>
-                        											<a href="media/spm/'.$_SESSION[thn_Login].'/'.$r[fl_Spm].'" data-rel="colorbox" target="_blank">
-                        												<img width="150" height="150" alt="150x150" src="media/spm/'.$_SESSION[thn_Login].'/'.$r[fl_Spm].'" />
-                        												<div class="text">
-                        													<div class="inner bottom">SPM</div>
-                        												</div>
-                        											</a>
-                        										</li>
+          													<p>Lampiran Bukti SPM / SPP </p>';
 
-                                            <li>
-                                              <a href="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp1].'" data-rel="colorbox" target="_blank">
-                                                <img width="150" height="150" alt="150x150" src="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp1].'" />
-                                                <div class="text">
-                                                  <div class="inner bottom">SPP-1</div>
-                                                </div>
-                                              </a>
-                                            </li>
 
-                                            <li>
-                                              <a href="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp2].'" data-rel="colorbox" target="_blank">
-                                                <img width="150" height="150" alt="150x150" src="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp2].'" />
-                                                <div class="text">
-                                                  <div class="inner bottom">SPP-2</div>
-                                                </div>
-                                              </a>
-                                            </li>
+                                  echo '</div>';
+                                  //potongan
+                                  echo '<div id="potongan" class="tab-pane">';
 
-                                            <li>
-                                              <a href="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp3].'" data-rel="colorbox" target="_blank">
-                                                <img width="150" height="150" alt="150x150" src="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp3].'" />
-                                                <div class="text">
-                                                  <div class="inner bottom">SPP-3</div>
-                                                </div>
-                                              </a>
-                                            </li>
+                                  echo '<table id="tabledata" class="table table-striped table-bordered">
+                                    <thead>
+                                    <tr>
+                                      <th></th><th>Jenis Potongan</th>
+                                      <th>Nilai</th><th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>';
 
-                        									</ul>';
 
-                                  echo '</div>
 
-          												<div id="dropdown14" class="tab-pane">
+                                    //data yang ditampilkan pada halaman user sesuai dengan role
+                                    function totalpot($id_Spm)
+                                    {
+                                      $sql= mysql_query("SELECT SUM(NilaiPotongan) AS total FROM potonganspm
+                                                          WHERE id_Spm = '$id_Spm'");
+                                      $r = mysql_fetch_array($sql);
+                                      return $r[total];
+                                    }
+
+                                    $sql2= mysql_query("SELECT * FROM spm a, potonganspm b
+                                                          WHERE a.id_Spm = b.id_Spm
+                                                          AND a.id_Spm = '$r[id_Spm]'");
+
+
+                                    $no=1;
+                                    while($dt = mysql_fetch_array($sql2)) {
+                                      $jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
+                                      $jnspotongan = array(1 => 'PPN 10%',2=>'PPH 21',3=>'PPH 22',4=>'PPH Gaji',5=>'IWP',6=>'TAPERUM',7=>'ASKES' );
+                                      $jsp = $jnspotongan[$dt[JnsPotongan]];
+                                      echo "<tr>
+                                              <td>".$no++."</td>
+                                              <td>$jsp</td>
+                                              <td>".angkrp($dt[NilaiPotongan])."</td>
+                                              <td class=align-center><button role='button' class='btn btn-minier btn-success' href='#modal-form-editpotongan' id='id_PotonganSpm' value='$dt[id_PotonganSpm]' data-toggle='modal' onClick='md_editpotongan(this.value)'><i class='fa fa-edit fa-lg'></i> Edit</button> ";
+                                                  echo "<a  class='btn btn-minier btn-danger' href='modul/act_modspm.php?module=spm&act=delpotongan&id=$dt[id_PotonganSpm]&idx=$_GET[id]' onclick=\"javascript: return confirm('Anda yakin hapus ?')\"><i class='fa fa-trash-o fa-lg'></i> Hapus</a>";
+                                              echo '</td>
+                                            </tr>';
+                                    }
+
+                                  echo '</tbody>';
+                                  //footer
+                                  echo '<tfoot>
+                                          <tr>
+                                            <td></td>
+                                            <td align="right"><strong>Jumlah Total...</strong></td>
+                                            <td>'.angkrp(totalpot($_GET[id])).'</td>
+                                            <td></td>
+                                          </tr>
+                                        </tfoot>';
+                                  echo '</table>';
+
+                                  echo '</div>';
+
+
+          												echo '<div id="dropdown14" class="tab-pane">
                                       <form action="modul/act_modverifikasi.php?module=verifikasi&act=lampver" method="post">
-                                        <p> Check-list Kelengkapan Dokumen Pengajuan SPM </p>';
+                                        <p> Check-list Kelengkapan Dokumen Pengajuan SPM '.$r[id_Ver].'</p>
+                                        <table class="table table-striped table-bordered">
+                                          <tr>
+                                            <td></td>
+                                            <td><input type="checkbox"></td>
+                                            <td>Jenis Dokumen</td>
+                                            <td>File</td>
+                                            <td>Keterangan</td>
+                                          </tr>';
 
-                                        //tampilkan data dari table verifikasi
-                                        $q1 = mysql_query("SELECT a.Jenis,b.id_Ver,b.StatusVer FROM spm a, verifikasi b
-                                                            WHERE b.id_Ver = '$_GET[id]'
-                                                            AND a.id_Spm = b.id_Spm ");
-                                        $r1 = mysql_fetch_array($q1);
+
 
               													//untuk daftar check list
-                                        $q = mysql_query("SELECT a.*,b.Isian FROM cklist a
-                                                          LEFT JOIN ketcklist b
-                                                          ON a.id_Cklist = b.id_Cklist
-                                                          AND b.id_Ver = '$r1[id_Ver]'
-                                                          WHERE a.Jenis = '$r1[Jenis]'");
+                                        $q3 = mysql_query("SELECT * FROM cklist a
+                                                          WHERE a.Jenis = '$r[Jenis]'");
 
                                         $no=1;
-                                        echo '<table class="table table-condensed">';
-                                              while($r=mysql_fetch_array($q)) {
+
+                                              while($r=mysql_fetch_array($q3)) {
                                                 echo "<input type=hidden name='id_Cklist[]' value='$r[id_Cklist]'>";
                                                 echo '<tr>
-                                                  <td>'.$no++.'</td><td><input type="checkbox" checked></td><td>'.$r[nm_List].'</td><td><input name="Isian[]" type="text" value="'.$r[Isian].'"></td>
+                                                  <td>'.$no++.'</td>
+                                                  <td><input type="checkbox" checked></td>
+                                                  <td>'.$r[nm_List].'</td>
+                                                  <td><a href="media/'.$_SESSION[thn_Login].'/'.$r[fileupload].'" target="_blank" class="btn btn-success btn-minier">View</a></td>
+                                                  <td><input name="Isian[]" type="text" value="'.$r[Isian].'"></td>
+
                                                 </tr>';
                                               }
                                         echo '</table>
+
                                       <div class="clearfix form-actions">
                                         <div class="col-md-offset-3 col-md-9">
                                           <input type="hidden" name="id_Ver" value="'.$_GET[id].'">
