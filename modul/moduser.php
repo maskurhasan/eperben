@@ -21,23 +21,17 @@ include "../config/errormode.php";
                 <div class="header">
                   <div class="row">
                     <div class="col-md-6"></div>
-                    <div class="col-md-6">
-                    <div class="input-group pull-right" style="width: 350px;">
-                      <input type="text" name="table_search" class="form-control" placeholder="Search">
-                      <div class="input-group-btn">
-                        <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>';
+                    <div class="col-md-6">';
                         if($_SESSION['UserLevel'] == 1) {
-                          echo "<button class='btn btn-sm btn-warning btn-fill' name='tambahsubdak' onClick=\"window.location.href='?module=user&act=add'\"><i class='fa fa-plus'></i> Tambah User</button>";
+                          echo "<button class='btn btn-sm btn-primary btn-fill pull-right' name='tambahsubdak' onClick=\"window.location.href='?module=user&act=add'\"><i class='fa fa-plus-circle'></i> Tambah User</button>";
                         } else {
                           echo "";
                         }
                       echo '</div>
-                    </div>
-                    </div>
                   </div>
                 </div>
                 <div class="content table-responsive">
-                  <table id="tabledata" class="table table-striped table-bordered table-hover">
+                  <table id="myTable" class="table table-striped table-bordered table-hover">
                     <thead>
                     <tr>
                       <th></th><th>Nama Lengkap</th><th>Username</th>
@@ -55,14 +49,14 @@ include "../config/errormode.php";
                                             //WHERE a.id_Skpd = b.id_Skpd");
 
                     } else {
-                      $sql = mysql_query("SELECT * FROM user a 
+                      $sql = mysql_query("SELECT * FROM user a
                                             LEFT JOIN skpd b
                                             ON a.id_Skpd = b.id_Skpd
                                             WHERE a.id_Skpd = '$_SESSION[id_Skpd]'
-                                            AND a.UserLevel != 1 
+                                            AND a.UserLevel != 1
                                             AND a.id_User = '$_SESSION[id_User]'");
 
-                    } 
+                    }
                     $no=1;
     				        while($dt = mysql_fetch_array($sql)) {
                       $Aktiv = $dt[Aktiv]==1 ? "Y" : "N";
@@ -76,24 +70,11 @@ include "../config/errormode.php";
                               <td>$dt[nm_Skpd]</td>
                               <td>$lvl[$level]</td>
                               <td>$Aktiv</td>
-                              <td class=align-center><a href='?module=user&act=edit&id=$dt[id_User]'><i class='fa fa-edit fa-lg'></i> Edit</a> ";
-                              //if($_SESSION['UserLevel'] <> 3) {
-                              //    echo "<a href='?module=user&act=akses&id=$dt[id_User]'><i class='fa fa-tasks fa-lg'></i> Akses Modul</a>";
-                              //}
+                              <td class=align-center><a class='btn btn-minier btn-primary' href='?module=user&act=edit&id=$dt[id_User]'><i class='fa fa-edit fa-lg'></i> Edit</a> ";
                               echo '</td>
                             </tr>';
                     }
                   echo '<tbody></table>
-
-                <div class="footer">
-                  <ul class="pagination pagination-sm no-margin pull-right">
-                    <li><a href="#">&laquo;</a></li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">&raquo;</a></li>
-                  </ul>
-                </div>
                 </div>
               </div>
             </div>';
@@ -117,9 +98,6 @@ include "../config/errormode.php";
         }
     echo '<div class="col-md-8">
             <div class="card">
-              <div class="header">
-                <h3 class="title">Tambah User</h3>
-              </div>
               <div class="content">';
               echo "<form class='form-horizontal' method=post action='modul/act_moduser.php?module=user&act=add'>";
                 echo '
@@ -168,7 +146,7 @@ include "../config/errormode.php";
                       <input type="password" class="form-control" id="inputPassword3" placeholder="Password" name="PassWord2" required>
                     </div>
                   </div>';
-                
+
                   echo '<div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">Level</label>
                     <div class="col-sm-10">
@@ -220,20 +198,13 @@ include "../config/errormode.php";
                     </div>
                   </div>
                   <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">Status PPK</label>
-                    <div class="col-sm-10">
-                      <label><input type=radio name=statusppk value=1  required/> Y</label>
-                      <label><input type=radio name=statusppk value=0  checked required/> N</label>
-                    </div>
-                  </div>
-                  <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">Aktiv</label>
                     <div class="col-sm-10">
                       <label><input type=radio name=Aktiv value=1 checked=checked  required/> Y</label>
                       <label><input type=radio name=Aktiv value=0  required/> N</label>
                     </div>
                   </div>';
-              
+
                 echo '<hr>
                 <div class="box">
                   <div class="col-sm-2"></div>
@@ -252,7 +223,7 @@ include "../config/errormode.php";
           //bedakan jika diedit dari admin dengan user sendiri
           if($_SESSION[UserLevel]==1) {
             $sql = mysql_query("SELECT * FROM user WHERE id_User = '$_GET[id]'");
-          } else { 
+          } else {
             $sql = mysql_query("SELECT * FROM user WHERE id_User = '$_SESSION[id_User]'");
           }
           $r = mysql_fetch_array($sql);
@@ -268,9 +239,6 @@ include "../config/errormode.php";
 
         echo '<div class="col-md-8">
                   <div class="card">
-                    <div class="header">
-                      <h3 class="box-title">Edit User</h3>
-                    </div>
                     <div class="content">';
                     echo "<form class='form-horizontal' method=post action='modul/act_moduser.php?module=user&act=edit'>";
                       echo '<div class="box-body">
@@ -317,6 +285,7 @@ include "../config/errormode.php";
                           <label for="inputPassword3" class="col-sm-2 control-label">Ulangi Password</label>
                           <div class="col-sm-10">
                             <input type="password" class="form-control" id="inputPassword3" placeholder="Password" name="PassWord2">
+                            <input type="hidden" class="form-control" name="UserLevel" value="'.$r[UserLevel].'">
                           </div>
                         </div>';
                 //hanya untuk level admn
@@ -335,7 +304,7 @@ include "../config/errormode.php";
                                 echo "<option value=$key>$key $value</option>";
                               }
                             }
-                            
+
                             echo '</select>
                           </div>
                         </div>
@@ -383,14 +352,7 @@ include "../config/errormode.php";
                             echo '</select>
                           </div>
                         </div>
-                        <div class="form-group">
-                          <label for="inputPassword3" class="col-sm-2 control-label">Status PPK</label>
-                          <div class="col-sm-10">';
-                          $r[statusppk] == 1 ? $chk1="checked" : $chk2="checked";
-                            echo "<label><input type=radio name=statusppk value=1 $chk1  required/> Y</label>
-                            <label><input type=radio name=statusppk value=0 $chk2  required/> N</label>";
-                          echo '</div>
-                        </div>
+
                         <div class="form-group">
                           <label for="inputPassword3" class="col-sm-2 control-label">Aktiv</label>
                           <div class="col-sm-10">';
@@ -491,12 +453,12 @@ include "../config/errormode.php";
 } //end tanpa session
 
 ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script type="text/javascript">
-  $(document).ready(function() {
-      $('#tabledata').DataTable();
-  });
-</script>
-<script type="text/javascript">
+$(document).ready(function(){
+    $('#myTable').DataTable();
+});
+
 $(document).ready(function() {
     $('#selecctall').click(function(event) {  //on click
         if(this.checked) { // check select status
@@ -601,8 +563,5 @@ function pilih_Skpd(id_BidUrusan)
     event.preventDefault();
     history.back(1);
 });
-$("#myTable").tablesorter({widgets: ['zebra'],
-  headers: {7: {sorter: true}}
-})
-.tablesorterPager({container: $("#pager")});
+
 </script>

@@ -8,7 +8,6 @@ if (empty($_SESSION[UserName]) AND empty($_SESSION[PassWord])) {
 //----------------------------------
 include "../config/koneksi.php";
 include "../config/fungsi.php";
-include "../config/fungsi_indotgl.php";
 include "../assets/css/printer.css";
 include "../config/errormode.php";
 ?>
@@ -27,12 +26,12 @@ window.print();
 <title>Laporan</title>
 </head>
 <body>
-<?php  
+<?php
 function rlsbulan($id_Bulan,$id_DataKegiatan){
-    $q = mysql_query("SELECT SUM(a.rls_Keu2) keu 
-                        FROM realisasi a,subkegiatan b 
-                        WHERE a.id_Subkegiatan = b.id_Subkegiatan 
-                        AND b.id_DataKegiatan = '$id_DataKegiatan' 
+    $q = mysql_query("SELECT SUM(a.rls_Keu2) keu
+                        FROM realisasi a,subkegiatan b
+                        WHERE a.id_Subkegiatan = b.id_Subkegiatan
+                        AND b.id_DataKegiatan = '$id_DataKegiatan'
                         AND a.id_Bulan = '$id_Bulan'");
     $r = mysql_fetch_array($q);
     $bln_lalu = $id_Bulan - 1;
@@ -40,28 +39,28 @@ function rlsbulan($id_Bulan,$id_DataKegiatan){
 }
 function rlsbulanlalu($id_Bulan,$id_DataKegiatan){
     $bln_lalu = $id_Bulan - 1;
-    $q = mysql_query("SELECT SUM(a.rls_Keu2) keu 
-                        FROM realisasi a,subkegiatan b 
-                        WHERE a.id_Subkegiatan = b.id_Subkegiatan 
-                        AND b.id_DataKegiatan = '$id_DataKegiatan' 
+    $q = mysql_query("SELECT SUM(a.rls_Keu2) keu
+                        FROM realisasi a,subkegiatan b
+                        WHERE a.id_Subkegiatan = b.id_Subkegiatan
+                        AND b.id_DataKegiatan = '$id_DataKegiatan'
                         AND a.id_Bulan = '$bln_lalu'");
     $r = mysql_fetch_array($q);
     return $r['keu'];
 }
 function maxbulan($id_DataKegiatan){
     $q = mysql_query("SELECT MAX(a.id_Bulan) AS bulan
-                        FROM realisasi a,subkegiatan b 
-                        WHERE a.id_Subkegiatan = b.id_Subkegiatan 
+                        FROM realisasi a,subkegiatan b
+                        WHERE a.id_Subkegiatan = b.id_Subkegiatan
                         AND b.id_DataKegiatan = '$id_DataKegiatan'");
     $r = mysql_fetch_array($q);
     //$bln_lalu = $id_Bulan - 1;
     return $r['bulan'];
 }
 function totalkeg($id_Bulan,$id_DataKegiatan){
-    $q = mysql_query("SELECT SUM(a.rls_Keu2) AS keu 
-                        FROM realisasi a,subkegiatan b 
-                        WHERE a.id_Subkegiatan = b.id_Subkegiatan 
-                        AND b.id_DataKegiatan = '$id_DataKegiatan' 
+    $q = mysql_query("SELECT SUM(a.rls_Keu2) AS keu
+                        FROM realisasi a,subkegiatan b
+                        WHERE a.id_Subkegiatan = b.id_Subkegiatan
+                        AND b.id_DataKegiatan = '$id_DataKegiatan'
                         AND a.id_Bulan = '$id_Bulan'");
     $r = mysql_fetch_array($q);
     //$bln_lalu = $id_Bulan - 1;
@@ -74,7 +73,7 @@ echo "<div id=print>
 				<table class=basic width=796 border=0 align=center cellpadding=0 cellspacing=0>
 				<tr align=center><td>LAPORAN PERKEMBANGAN PROGRAM / KEGIATAN</td></tr>
 				<tr align=center><td>".strtoupper($rskpd[nm_Skpd])."</td></tr>
-				<tr align=center><td>Tahun Anggaran : $_SESSION[thn_Login]</td></tr></table></div>	
+				<tr align=center><td>Tahun Anggaran : $_SESSION[thn_Login]</td></tr></table></div>
 	            <table class=basic width=796 border=0 align=center cellpadding=0 cellspacing=0 id=tablemodul1>  <tr>
     <td rowspan=2>No</td>
     <td rowspan=2>Program / Kegiatan</td>
@@ -115,15 +114,15 @@ echo "<div id=print>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>";
-    $q = mysql_query("SELECT *,b.id_Program,a.id_Skpd,a.TahunAnggaran  
-                        FROM datakegiatan a, kegiatan b 
-                        WHERE a.id_Kegiatan = b.id_Kegiatan 
-                        AND a.id_Skpd = '$_SESSION[id_Skpd]' 
-                        AND a.TahunAnggaran = '$_SESSION[thn_Login]' 
+    $q = mysql_query("SELECT *,b.id_Program,a.id_Skpd,a.TahunAnggaran
+                        FROM datakegiatan a, kegiatan b
+                        WHERE a.id_Kegiatan = b.id_Kegiatan
+                        AND a.id_Skpd = '$_SESSION[id_Skpd]'
+                        AND a.TahunAnggaran = '$_SESSION[thn_Login]'
                         GROUP BY b.id_Program");
     while($r=mysql_fetch_array($q)) {
-            $q1 = mysql_query("SELECT nm_Program, id_Program  
-                                      FROM program 
+            $q1 = mysql_query("SELECT nm_Program, id_Program
+                                      FROM program
                                       WHERE id_Program = '$r[id_Program]'");
             $r1=mysql_fetch_array($q1);
         echo "<tr>
@@ -145,19 +144,19 @@ echo "<div id=print>
             <td>&nbsp;</td>
             <td>&nbsp;</td>
           </tr>";
-        $q2 = mysql_query("SELECT a.nm_Kegiatan, b.id_DataKegiatan,b.AnggKeg 
-                FROM kegiatan a, datakegiatan b 
-                WHERE a.id_Kegiatan = b.id_Kegiatan 
-                AND b.id_Skpd = '$r[id_Skpd]' 
-                AND b.TahunAnggaran = '$r[TahunAnggaran]' 
+        $q2 = mysql_query("SELECT a.nm_Kegiatan, b.id_DataKegiatan,b.AnggKeg
+                FROM kegiatan a, datakegiatan b
+                WHERE a.id_Kegiatan = b.id_Kegiatan
+                AND b.id_Skpd = '$r[id_Skpd]'
+                AND b.TahunAnggaran = '$r[TahunAnggaran]'
                 AND a.id_Program = '$r1[id_Program]'");
         while ($r2=mysql_fetch_array($q2)) {
-            
+
             echo "<tr>
                     <td>&nbsp;</td>
                     <td>$r2[nm_Kegiatan]</td>
                     <td>".number_format($r2[AnggKeg])."</td>";
-                    for ($i=1; $i <= 12; $i++) { 
+                    for ($i=1; $i <= 12; $i++) {
                         //cari 0 jika bulan 2
                         $bulanlalu = rlsbulanlalu($i,$r2['id_DataKegiatan']);
                         $bulanini = rlsbulan($i,$r2['id_DataKegiatan']);

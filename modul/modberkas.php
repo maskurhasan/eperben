@@ -21,7 +21,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                     <div class="row">
                       <div class="col-md-6"></div>
                       <div class="col-md-6">';
-                          echo "<button class='btn btn-sm btn-primary btn-fill pull-right' name='tambahsubdak' onClick=\"window.location.href='?module=sp2d&act=daftarspm'\"><i class='fa fa-plus-circle'></i> Tambah SP2D</button>";
+                          echo "";
                         echo '</div>
                     </div>
                   </div>
@@ -30,16 +30,18 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                       <thead>
                       <tr>
                         <th></th><th>SPM</th><th>Tanggal</th>
-                        <th>Jenis</th><th>Anggaran</th><th>SP2D</th><th>SKPD</th><th>Status Pengesahan</th><th></th>
+                        <th>Jenis</th><th>Anggaran</th><th>SKPD</th><th>Status Pengesahan</th><th></th>
                       </tr>
                       </thead>
                       <tbody>';
 
                       //data yang ditampilkan pada halaman user sesuai dengan role
                       if($_SESSION['UserLevel']==1) {
-                        $sql= mysql_query("SELECT a.*,b.nm_Skpd,c.StatusVer  FROM spm a, skpd b, verifikasi c
-                                            WHERE a.id_Skpd = b.id_Skpd
-                                            AND a.id_Spm = c.id_Spm");
+                        $sql= mysql_query("SELECT a.*,b.nm_Skpd,c.id_Ver,c.StatusSp2d,c.NomorSp2d FROM spm a, skpd b,verifikasi c
+                                     WHERE a.id_Skpd = b.id_Skpd
+                                     AND a.id_Spm = c.id_Spm
+                                     AND c.StatusVer = 1
+                                     AND c.StatusPengbud = 2");
                       } elseif($_SESSION['UserLevel']==5) {
                          $sql= mysql_query("SELECT a.*,b.nm_Skpd,d.nm_Lengkap,c.id_Ver,c.StatusSp2d,c.NomorSp2d FROM spm a, skpd b,verifikasi c, user d
                                       WHERE a.id_Skpd = b.id_Skpd
@@ -64,14 +66,11 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                 <td>$dt[Tanggal]</td>
                                 <td>$jns_spm[$jns]</td>
                                 <td>".angkrp($dt[Anggaran])."</td>
-                                <td>$dt[NomorSp2d]</td>
                                 <td>$dt[nm_Skpd]</td>
                                 <td>$sttver</td>
-                                <td class=align-center><button role='button' href='#modal-form' value='$dt[id_Ver]' id='id_Ver' onClick='md_vwsp2d(this.value)' class='btn btn-success btn-minier' data-toggle='modal'><i class='fa fa-edit fa-lg'></i>  Edit </button> <br>";
-                                  echo "<a href='modul/act_modverifikasi.php?module=sp2d&act=hapussp2d&id=$dt[id_Ver]'  class='btn btn-minier btn-danger' onclick=\"javascript: return confirm('Anda yakin hapus ?')\">
-                                      <i class='fa fa-trash-o fa-lg' ></i> Hapus</a>";
-                                  echo "<a href='?module=sp2d&act=upload&id=$dt[id_Ver]'  class='btn btn-minier btn-primary'>
-                                      <i class='fa fa-files-o' ></i> Upload SP2D</a>";
+                                <td class=align-center>";
+                                  echo "<a href='?module=berkas&act=view&id=$dt[id_Ver]'  class='btn btn-minier btn-success'>
+                                      <i class='fa fa-files-o' ></i> View</a>";
 
                                 echo '</td>
                               </tr>';
@@ -119,76 +118,116 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
       								</div>';
 
   break;
-  case 'daftarspm':
+  case 'view':
   echo '<div class="col-md-12">
           <div class="card">
             <div class="header">
               <div class="row">
-                <div class="col-md-6">Daftar SPM Disahkan</div>
+                <div class="col-md-6">Daftar File SPM</div>
                 <div class="col-md-6">';
-                    echo "<a href='?module=sp2d' class='btn btn-sm btn-danger btn-fill pull-right' role='button' id='id_Spm'><i class='fa fa-reply'></i> Kembali</a>";
+                    echo "<a href='?module=berkas' class='btn btn-sm btn-danger btn-fill pull-right' role='button' id='id_Spm'><i class='fa fa-reply'></i> Kembali</a>";
                   echo '</div>
               </div>
             </div>
             <div class="content table-responsive">
-              <table id="myTable" class="table table-striped table-bordered table-hover">
-                <thead>
-                <tr>
-                  <th></th><th>Nomor</th><th>Tanggal</th>
-                  <th>Jenis</th><th>Anggaran</th><th>SKPD</th><th>Verifikator</th><th></th>
-                </tr>
-                </thead>
-                <tbody>';
+                <div class="col-md-6">
+                  <div class="widget-box">
+                      <div class="widget-header">
+                        <h4 class="smaller">
+                          Lampiran SPM
+                        </h4>
+                      </div>
 
-                //data yang ditampilkan pada halaman user sesuai dengan role
-                if($_SESSION['UserLevel']==1) {
-                  $sql= mysql_query("SELECT a.*,b.nm_Skpd,d.nm_Lengkap FROM spm a, skpd b,verifikasi c, user d
-                                      WHERE a.id_Skpd = b.id_Skpd
-                                      AND a.id_Spm = c.id_Spm
-                                      AND c.id_User = d.id_User
-                                      AND c.StatusVer = 1
-                                      AND c.StatusPengbud = 1 ");
-                } elseif ($_SESSION['UserLevel']==5) {
-                  $sql= mysql_query("SELECT a.*,b.nm_Skpd,d.nm_Lengkap,c.id_Ver FROM spm a, skpd b,verifikasi c, user d
-                                      WHERE a.id_Skpd = b.id_Skpd
-                                      AND a.id_Spm = c.id_Spm
-                                      AND c.id_User = d.id_User
-                                      AND c.StatusVer = 1
-                                      AND c.StatusPengbud = 2
-                                      AND c.StatusSp2d = 0");
-                } else {
-                  echo "nn";
-                }
-                $no=1;
-                while($dt = mysql_fetch_array($sql)) {
-                  $jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
-                  $jns = $dt['Jenis'];
+                      <div class="widget-body">
+                        <div class="widget-main">
+                        <table class="table table-striped table-bordered table-condensed">
+                          <thead>
+                          <tr>
+                            <th></th>
+                            <th>Jenis Dokumen</th>
+                            <th>File</th>
+                          </tr>
+                            </thead>
+                            <tbody>';
+                            $sql= "SELECT a.*,b.nm_Skpd,c.* FROM spm a, skpd b, verifikasi c
+                                                WHERE a.id_Skpd = b.id_Skpd
+                                                AND a.StatusSpm = 1
+                                                AND a.id_Spm = c.id_Spm
+                                                AND c.id_Ver = '$_GET[id]'";
+                            $q = mysql_query($sql);
+                            $r = mysql_fetch_array($q);
 
-                  echo "<tr>
-                          <td>".$no++."</td>
-                          <td>$dt[Nomor]</td>
-                          <td>$dt[Tanggal]</td>
-                          <td>$jns_spm[$jns]</td>
-                          <td>$dt[Anggaran]</td>
-                          <td>$dt[nm_Skpd]</td>
-                          <td>$dt[nm_Lengkap]</td>
-                          <td class=align-center>
-                              <button role='button' href='#modal-form' value='$dt[id_Ver]' id='id_Ver' onClick='md_vwsp2d(this.value)' class='btn btn-success btn-sm' data-toggle='modal'> Proses Cetak SP2D </button>";
-                              echo "";
-                          echo '</td>
-                        </tr>';
-                }
-              echo '<tbody></table>
+                          function ck_document($id_Cklist, $id_Spm,$aksi,$str) {
+                            $q = mysql_query("SELECT * FROM uploadberkas
+                                                WHERE id_Cklist = '$id_Cklist'
+                                                AND id_Spm = '$id_Spm'");
+                            $r = mysql_fetch_array($q);
+                            $hit = mysql_num_rows($q);
+                            if($str == "file") {
+                              if($hit > 0) {
+                                $ck = '<a href="media/'.$_SESSION[thn_Login].'/'.$r[fileupload].'" target="_blank" class="btn btn-success btn-minier"><i class="fa fa-files-o"></i> File</a>';
+                              } else {
+                                $ck ="";
+                              }
+                            } elseif($str == "comment") {
+                              $ck = '<input name="Keterangan" type="text" value="'.$r[Keterangan].'">';
+                            } else {
+                              $ck = '<button type="submit" name="simpan" value="'.$r[id_Upload].'" class="btn btn-minier btn-primary"><i class="fa fa-save"></i> Simpan</button>';
+                            }
+                            return $ck;
+                          }
 
-            <div class="footer">
-              <ul class="pagination pagination-sm no-margin pull-right">
-                <li><a href="#">&laquo;</a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">&raquo;</a></li>
-              </ul>
-            </div>
+                        //untuk daftar check list
+                        $q3 = mysql_query("SELECT * FROM cklist a
+                                          WHERE a.Jenis = '$r[Jenis]'
+                                          AND a.Aktiv = 1");
+
+                        $no=1;
+
+                              while($r1=mysql_fetch_array($q3)) {
+                                echo '<tr>
+                                  <td>'.$no++.'</td>
+                                  <td>'.$r1[nm_List].'</td>
+                                  <td>'.ck_document($r1[id_Cklist],$r[id_Spm],$aksi,'file').'</td>
+
+                                </tr>
+                                </form>';
+                              }
+                        echo '</tbody></table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <div class="col-md-6">
+                  <div class="widget-box">
+                      <div class="widget-header">
+                        <h4 class="smaller">
+                          Dokumen SPM
+                        </h4>
+                      </div>
+
+                      <div class="widget-body">
+                        <div class="widget-main">
+                        <table class="table table-striped table-bordered table-condensed">
+                          <thead>
+                          <tr>
+                            <th></th>
+                            <th>Jenis Dokumen</th>
+                            <th>File</th>
+                          </tr>
+                            </thead>
+                            <tbody>';
+                                echo '<tr>
+                                  <td>1</td>
+                                  <td>Surat Perintah Pencairan Dana (SP2D)</td>
+                                  <td><a href="media/'.$_SESSION[thn_Login].'/sp2d/'.$r[fl_sp2d].'" target="_blank" class="btn btn-success btn-minier"><i class="fa fa-files-o"></i> File Upload</a></td>
+                                </tr>';
+                        echo '</tbody></table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
         </div>';
@@ -227,45 +266,6 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
 										</div>
 									</div>
 								</div>';
-
-
-  break;
-	case 'upload':
-  $sql = "SELECT * FROM verifikasi WHERE id_Ver = $_GET[id]";
-  $q = mysql_query($sql);
-  $r = mysql_fetch_array($q);
-	  echo '<div class="content table-responsive">
-        <div class="col-md-8">
-          <div class="widget-box">
-              <div class="widget-header">
-                <h4 class="smaller">
-                  Upload SP2D
-                </h4>
-              </div>
-              <div class="widget-body">
-                <div class="widget-main">';
-                if(empty($r[fl_sp2d])) {
-                  echo '<form method="post" action="modul/act_modverifikasi.php?module=sp2d&act=uploadsp2d" class="form-horizontal" enctype="multipart/form-data">
-                      <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right" for="form-field-1">SP2D :</label>
-                        <div class="col-sm-6">
-                          <input type="file" accept="image/*" name="fl_sp2d" value="" required/>
-                        </div>
-                        <div class="col-sm-2">
-                          <button type="submit" name="simpanupload" class="btn btn-minier btn-primary"><i class="fa fa-upload"></i> Upload</button>
-                          <input type="hidden" name="StatusSp2d" value="'.$r[StatusSp2d].'">
-                          <input type="hidden" name="id_Skpd" value="'.$_SESSION[id_Skpd].'">
-                          <input type="hidden" name="id_Ver" value="'.$r[id_Ver].'">
-                        </div>
-                      </div>
-                  </form>';
-                } else {
-                  echo 'Dokumen SP2D : <a href="media/'.$_SESSION[thn_Login].'/sp2d/'.$r[fl_sp2d].'" target="_blank" class="btn btn-success btn-minier"><i class="fa fa-files-o"></i> File Upload</a>';
-                }
-                echo '</div>
-              </div>
-            </div>
-          </div>';
   break;
   }//end switch
 } //end tanpa hak akses

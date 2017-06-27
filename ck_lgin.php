@@ -47,7 +47,7 @@ if ($ketemu > 0){
   header('location:main.php?module=home');
 }
 else{
-   header('location:login.html');
+   header('location:index.php');
 }
 }
 ?>

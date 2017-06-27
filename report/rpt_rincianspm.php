@@ -6,7 +6,6 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 } else {
   include "../config/koneksi.php";
   include "../config/fungsi.php";
-  include "../config/fungsi_indotgl.php";
   include "../assets/css/printer.css";
 
   //filter

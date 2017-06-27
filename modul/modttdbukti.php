@@ -20,21 +20,16 @@ include "modmaster.php";
                   <div class="header">
                     <div class="row">
                       <div class="col-md-6"></div>
-                      <div class="col-md-6">
-                      <div class="input-group pull-right" style="width: 350px;">
-                        <input type="text" name="table_search" class="form-control" placeholder="Search">
-                        <div class="input-group-btn">
-                          <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>';
-                          echo "<button class='btn btn-sm btn-warning btn-fill' name='tambahsubdak' onClick=\"window.location.href='?module=ttdbukti&act=add'\"><i class='fa fa-plus'></i> Tambah User</button>";
-                        echo '</div>
-                      </div>
-                      </div>
+                      <div class="col-md-6">';
+                          echo "<button class='btn btn-sm btn-primary btn-fill pull-right' name='tambahsubdak' onClick=\"window.location.href='?module=ttdbukti&act=add'\"><i class='fa fa-plus-circle'></i> Tambah TTD</button>";
+                      echo '</div>
                     </div>
                   </div>
                   <div class="content table-responsive">
-                    <table id="tabledata" class="table table-striped table-bordered table-hover">
+                    <table id="myTable" class="table table-striped table-bordered table-hover">
                       <thead>
                       <tr>
+                        <th></th>
                         <th>Nama</th><th>NIP</th>
                         <th>Jabatan</th><th></th>
                       </tr>
@@ -56,11 +51,12 @@ include "modmaster.php";
                         $jbt = $dt['Jabatan'];
 
                         echo "<tr>
+                                <td>".$no++."</td>
                                 <td>$dt[NamaTtd]</td>
                                 <td>$dt[Nip]</td>
                                 <td>$jns_jabatan[$jbt]</td>
-                                <td class=align-center><a href='?module=ttdbukti&act=edit&id=$dt[id]'><i class='fa fa-edit fa-lg'></i> Edit</a> ";
-                                    echo "<a href='#'><i class='fa fa-tasks fa-trash-o'></i> Hapus</a>";
+                                <td class=align-center><a class='btn btn-minier btn-primary' href='?module=ttdbukti&act=edit&id=$dt[id]'><i class='fa fa-edit fa-lg'></i> Edit</a> ";
+                                    echo "<a class='btn btn-minier btn-danger' href='#'><i class='fa fa-tasks fa-trash-o'></i> Hapus</a>";
 
                                 echo '</td>
                               </tr>';
@@ -259,7 +255,11 @@ include "modmaster.php";
 } //end tanpa hak akses
 } //end tanpa session
 ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script type="text/javascript">
+$(document).ready(function(){
+    $('#myTable').DataTable();
+});
 
 function pilih_Urusan(id_Urusan)
 {

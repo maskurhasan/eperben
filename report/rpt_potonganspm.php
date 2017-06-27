@@ -36,53 +36,26 @@ window.print();
   				echo "<div id=print>
   				<div align=center>
   				<table class=basic width=796 border=0 align=center cellpadding=0 cellspacing=0>
-  				<tr align=center><td>LAPORAN REGISTER SPM / SP2D</td></tr>
+  				<tr align=center><td>LAPORAN REALISASI POTONGAN SPM</td></tr>
   				<tr align=center><td>".strtoupper($rskpd[nm_Skpd])."</td></tr>
   				<tr align=center><td>Tahun Anggaran : $_SESSION[thn_Login]</td></tr></table></div>";
-          if($_GET[jnslap] == 1) {
-              echo "<table class=basic width=796 border=0 align=center cellpadding=0 cellspacing=0 id=tablemodul1>
-                  <thead>
-                  <tr align=center>
-                    <th>No</th>
-                    <th>Tanggal</th>
-                    <th>Nomor SPM</th>
-                    <th>Uraian</th>
-                    <th>Nilai SPM</th>
-                  </tr>
-                  </thead>
-                  <tbody>";
-                  $sql= mysql_query("SELECT * FROM spm
-                                      WHERE id_Skpd = '$_SESSION[id_Skpd]' $filt1");
-                  $no = 1;
-                  while($r = mysql_fetch_array($sql)) {
-                    echo "<tr>
-                      <td>".$no++."</td>
-                      <td>$r[Tanggal]</td>
-                      <td>$r[Nomor]</td>
-                      <td>$r[Keterangan]</td>
-                      <td>".angkrp($r[Anggaran])."</td>
-                    </tr>";
-                  }
-                  echo "</tbody>
-                </table>";
-          } elseif($_GET[jnslap]==2) {
             echo "<table class=basic width=796 border=0 align=center cellpadding=0 cellspacing=0 id=tablemodul1>
                 <thead>
                 <tr align=center>
                   <th rowspan=2>No</th>
-                  <th rowspan=2>Tanggal</th>
-                  <th rowspan=2>Nomor SP2D</th>
+                  <th rowspan=2>Nomor SPM</th>
+                  <th rowspan=2>Tgl. SPM</th>
                   <th rowspan=2>Jenis</th>
                   <th rowspan=2>Uraian</th>
-                  <th rowspan=2>Nilai SP2D</th>
-                  <th colspan=6>Potongan</th>
-                  <th rowspan=2>Jml Bersih</th>
+                  <th rowspan=2>Nilai SPM</th>
+                  <th colspan=7>Potongan</th>
                 </tr>
                 <tr>
-                  <th>PPh</th>
-                  <th>PPn</th>
-                  <th>IWP</th>
+                  <th>PPn 10%</th>
+                  <th>PPh 21</th>
+                  <th>PPh 22</th>
                   <th>PPh Gaji</th>
+                  <th>IWP</th>
                   <th>Taperum</th>
                   <th>Askes</th>
                 </tr>
@@ -94,9 +67,21 @@ window.print();
                                     WHERE id_Spm = '$id_Spm'
                                     AND JnsPotongan = '$JnsPotongan'");
                   $r = mysql_fetch_array($q);
-                  return $r[jmlpotongan];
+                  $r[jmlpotongan] <= 0 ? $t = "-" : $t = $r[jmlpotongan];
+                  return $t;
                 }
-                $sql= mysql_query("SELECT a.*,b.Keterangan,b.Anggaran,b.Jenis,b.id_Spm as idspm
+                function totalpot($JnsPotongan) {
+                  $q = mysql_query("SELECT SUM(a.NilaiPotongan) AS jmlpotongan
+                                    FROM potonganspm a,spm b
+                                    WHERE a.JnsPotongan = '$JnsPotongan'
+                                    AND a.id_Spm = b.id_Spm
+                                    AND b.id_Skpd = '$_SESSION[id_Skpd]'
+                                    AND b.TahunAngg = '$_SESSION[thn_Login]'");
+                  $r = mysql_fetch_array($q);
+                  $r[jmlpotongan] <= 0 ? $t = "-" : $t = $r[jmlpotongan];
+                  return $t;
+                }
+                $sql= mysql_query("SELECT a.*,b.Tanggal,b.Nomor,b.Keterangan,b.Anggaran,b.Jenis,b.id_Spm as idspm
                                     FROM verifikasi a, spm b
                                     WHERE b.id_Skpd = '$_SESSION[id_Skpd]'
                                     GROUP BY b.id_Spm");
@@ -107,25 +92,36 @@ window.print();
                 while($r = mysql_fetch_array($sql)) {
                   echo "<tr>
                     <td>".$no++."</td>
-                    <td>".tgl_indo($r[tgl_Sp2d])."</td>
-                    <td>$r[NomorSp2d]</td>
+                    <td>".$r[Nomor]."</td>
+                    <td>".tgl_indo($r[Tanggal])."</td>
                     <td>".$jns_spm[$r[Jenis]]."</td>
                     <td>$r[Keterangan]</td>
                     <td>".angkrp($r[Anggaran])."</td>
-                    <td>".angkrp(hitpotongan(1,$r[$idspm]))."</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>".angkrp(hitpotongan(1,$r[idspm]))."</td>
+                    <td>".angkrp(hitpotongan(2,$r[idspm]))."</td>
+                    <td>".angkrp(hitpotongan(3,$r[idspm]))."</td>
+                    <td>".angkrp(hitpotongan(4,$r[idspm]))."</td>
+                    <td>".angkrp(hitpotongan(5,$r[idspm]))."</td>
+                    <td>".angkrp(hitpotongan(6,$r[idspm]))."</td>
+                    <td>".angkrp(hitpotongan(7,$r[idspm]))."</td>
                   </tr>";
                 }
                 echo "</tbody>
+                <tfoot>
+                <tr>
+                  <td></td>
+                  <td colspan='4'>JUMLAH...</td>
+                  <td></td>
+                  <td>".angkrp(totalpot(1))."</td>
+                  <td>".angkrp(totalpot(2))."</td>
+                  <td>".angkrp(totalpot(3))."</td>
+                  <td>".angkrp(totalpot(4))."</td>
+                  <td>".angkrp(totalpot(5))."</td>
+                  <td>".angkrp(totalpot(6))."</td>
+                  <td>".angkrp(totalpot(7))."</td>
+                </tr>
+                </tfoot>
               </table>";
-          } else {
-            echo "Silahkan pilih jenis laporan";
-          }
 
 ?>
 

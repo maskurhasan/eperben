@@ -20,19 +20,13 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                   <div class="header">
                     <div class="row">
                       <div class="col-md-6"></div>
-                      <div class="col-md-6">
-                      <div class="input-group pull-right" style="width: 350px;">
-                        <input type="text" name="table_search" class="form-control" placeholder="Search">
-                        <div class="input-group-btn">
-                          <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>';
-                          echo "<button class='btn btn-sm btn-warning btn-fill' name='tambahsubdak' onClick=\"window.location.href='?module=verifikasi&act=daftarspm'\"><i class='fa fa-plus'></i> Tambah Verifikasi SPM</button>";
+                      <div class="col-md-6">';
+                          echo "<button class='btn btn-sm btn-primary btn-fill pull-right' name='tambahsubdak' onClick=\"window.location.href='?module=verifikasi&act=daftarspm'\"><i class='fa fa-plus-circle'></i> Tambah Verifikasi SPM</button>";
                         echo '</div>
-                      </div>
-                      </div>
                     </div>
                   </div>
                   <div class="content table-responsive">
-                    <table id="tabledata" class="table table-striped table-bordered table-hover">
+                    <table id="myTable" class="table table-striped table-bordered table-hover">
                       <thead>
                       <tr>
                         <th></th><th>Nomor</th><th>Tanggal</th>
@@ -69,13 +63,16 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                         $jns = $dt['Jenis'];
                         $sttver = $status[$dt[StatusVer]];
                         $dt[StatusPengbud] > 0 ? $ik = "<i class='fa fa-lock'></i>" : $ik = "";
+                        $tbl = "<button class='btn btn-primary btn-white btn-minier' id='id_Spm' href='#modal-form'
+                                value='$dt[id_Spm]' data-toggle='modal' onClick='vw_kegspm(this.value)'>
+                                <i class='fa fa-desktop'></i> Tampilkan</button>";
                         echo "<tr>
                                 <td>".$no++."</td>
                                 <td>$ik $dt[Nomor]</td>
                                 <td>$dt[Tanggal]</td>
                                 <td>$jns_spm[$jns]</td>
                                 <td>$dt[nm_Skpd]</td>
-                                <td>".angkrp(totalspm($dt[id_Spm]))."</td>
+                                <td>".angkrp(totalspm($dt[id_Spm]))." $tbl</td>
                                 <td>$sttver</td>
                                 <td class=align-center>
                                   <a class='btn btn-primary btn-minier' href='?module=verifikasi&act=add&id=$dt[id_Ver]'><i class='fa fa-edit fa-lg'></i> Proses</a>
@@ -99,6 +96,35 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                 </div>
               </div>';
 
+              echo '<div id="modal-form" class="modal" tabindex="-1">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                              <h4 class="smaller lighter blue no-margin">Data Kegiatan SPM</h4>
+                            </div>
+
+                            <div class="modal-body">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12">
+                                <form method=post action="modul/act_modspm.php?module=spm&act=potongan">
+                                    <div id="vw_kegspm"></div>
+
+                                    </div>
+                                  </div>
+                                  </div>
+
+                                  <div class="modal-footer">
+                                  <button class="btn btn-sm btn-danger" data-dismiss="modal">
+                                    <i class="ace-icon fa fa-times"></i>
+                                    Tutup
+                                  </button>
+                                  </form>
+
+                          </div>
+                        </div>
+                      </div>';
+
   break;
   case 'daftarspm':
   echo '<div class="col-md-12">
@@ -106,15 +132,9 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
             <div class="header">
               <div class="row">
                 <div class="col-md-6">Daftar SPM Belum Verifikasi</div>
-                <div class="col-md-6">
-                <div class="input-group pull-right" style="width: 350px;">
-                  <input type="text" name="table_search" class="form-control" placeholder="Search">
-                  <div class="input-group-btn">
-                    <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>';
-                    echo "<a href='?module=verifikasi' class='btn btn-sm btn-danger btn-fill' role='button' id='id_Spm'><i class='fa fa-plus'></i> Kembali</a>";
+                <div class="col-md-6">';
+                    echo "<a href='?module=verifikasi' class='btn btn-sm btn-danger btn-fill pull-right' role='button' id='id_Spm'><i class='fa fa-reply'></i> Kembali</a>";
                   echo '</div>
-                </div>
-                </div>
               </div>
             </div>
             <div class="content table-responsive">';
@@ -133,9 +153,12 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                       AND a.StatusSpm = 1
                                       AND a.id_Spm NOT IN (SELECT id_Spm FROM verifikasi");
                 } else {
-                  $sql= mysql_query("SELECT a.*,b.nm_Skpd FROM spm a, skpd b
+                  $sql= mysql_query("SELECT a.*,b.nm_Skpd FROM spm a, skpd b, aksesskpd c
                                       WHERE a.id_Skpd = b.id_Skpd
                                       AND a.StatusSpm = 1
+                                      AND b.id_Skpd = c.id_Skpd
+                                      AND a.TahunAngg = '$_SESSION[thn_Login]'
+                                      AND c.id_User = '$_SESSION[id_User]'
                                       AND a.id_Spm NOT IN (SELECT id_Spm FROM verifikasi)");
                 }
                 $hit = mysql_num_rows($sql);
@@ -145,7 +168,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                           SPM Belum Tersedia <a href='?module=verifikasi' class='btn btn-success btn-sm' >
                           <i class='ace-icon fa fa-undo bigger-110'></i>Kembali</a></div>";
                 } else {
-                  echo '<table id="tabledata" class="table table-striped table-bordered table-hover">
+                  echo '<table id="myTable" class="table table-striped table-bordered table-hover">
                   <thead>
                   <tr>
                     <th></th><th>Nomor</th><th>Tanggal</th>
@@ -233,7 +256,16 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
         $r = mysql_fetch_array($q);
         $jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
         $jns = $r['Jenis'];
+        $stt = $r[StatusVer];
 
+        if($_GET[error]==1) {
+          echo '<div class="alert alert-danger alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <strong>Error!</strong>  SPM dalam proses pengesahan BUD.
+              </div>';
+        } else {
+          echo "";
+        }
 
 		    echo '<div class="col-md-6">
         <div class="profile-user-info profile-user-info-striped">
@@ -264,34 +296,35 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
         </div>
         </div>';
 
-        echo '<div class="col-md-6">
-        <div class="profile-user-info profile-user-info-striped">
-          <div class="profile-info-row">
-            <div class="profile-info-name"> Jenis SPM </div>
-            <div class="profile-info-value">
-              '.$jns_spm[$jns].'
-            </div>
-          </div>
-          <div class="profile-info-row">
-            <div class="profile-info-name"> Nomor</div>
-            <div class="profile-info-value">
-              '.$r['Nomor'].'  Tanggal '.$r['Tanggal'].'
-            </div>
-          </div>
-          <div class="profile-info-row">
-            <div class="profile-info-name"> Anggaran </div>
-            <div class="profile-info-value">
-              '.angkrp($r['Anggaran']).'
-            </div>
-          </div>
-          <div class="profile-info-row">
-            <div class="profile-info-name"> SKPD </div>
-            <div class="profile-info-value">
-              '.$r['nm_Skpd'].'
-            </div>
-          </div>
-        </div>
-        </div>';
+
+                echo '<div class="col-md-6">
+                <div class="profile-user-info profile-user-info-striped">
+                  <div class="profile-info-row">
+                    <div class="profile-info-name"> Peneliti oleh </div>
+                    <div class="profile-info-value">
+                      '.$_SESSION[nm_Lengkap].'
+                    </div>
+                  </div>
+                  <div class="profile-info-row">
+                    <div class="profile-info-name"> Tanggal</div>
+                    <div class="profile-info-value">
+                      '.tgl_indo($r['tgl_Ver']).'
+                    </div>
+                  </div>
+                  <div class="profile-info-row">
+                    <div class="profile-info-name"> Catatan  </div>
+                    <div class="profile-info-value">
+                      '.$r['InformasiVer'].'
+                    </div>
+                  </div>
+                  <div class="profile-info-row">
+                    <div class="profile-info-name"> Status Verifikasi </div>
+                    <div class="profile-info-value">
+                      '.$status[$stt].'
+                    </div>
+                  </div>
+                </div>
+                </div>';
 
         echo '<p>&nbsp;</p>';
 
@@ -299,7 +332,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
         echo '<div class="col-sm-12 widget-container-col">
 										<div class="widget-box transparent">
 											<div class="widget-header">
-												<h4 class="widget-title lighter">Transparent Box </h4>
+												<h4 class="widget-title lighter">Rincian SPM </h4>
 
 												<div class="widget-toolbar no-border">
 													<a href="#" data-action="settings">
@@ -331,10 +364,6 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
 
                                   <li>
           													<a data-toggle="tab" href="#potongan"><i class="ace-icon fa fa-list"></i> Potongan SPM</a>
-          												</li>
-
-          												<li>
-          													<a data-toggle="tab" href="#profile4"><i class="ace-icon fa fa-folder"></i> Lampiran Bukti</a>
           												</li>
 
           												<li>
@@ -418,23 +447,19 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                             <tr>
                                               <td></td>
                                               <td align="right"><strong>Jumlah Total...</strong></td>
-                                              <td>'.angkrp(totalangg($_GET[id])).'</td>
-                                              <td>'.angkrp(totalspm($_GET[id])).'</td>
+                                              <td>'.angkrp(totalangg($r[id_Spm])).'</td>
+                                              <td>'.angkrp(totalspm($r[id_Spm])).'</td>
                                             </tr>
                                           </tfoot>';
                                     echo '</table>';
 
-                                  echo '</div>
-
-          												<div id="profile4" class="tab-pane">
-          													<p>Lampiran Bukti SPM / SPP </p>';
-
-
                                   echo '</div>';
+
+
                                   //potongan
                                   echo '<div id="potongan" class="tab-pane">';
 
-                                  echo '<table id="tabledata" class="table table-striped table-bordered">
+                                  echo '<table class="table table-striped table-bordered table-responsive">
                                     <thead>
                                     <tr>
                                       <th></th><th>Jenis Potongan</th>
@@ -480,7 +505,7 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                           <tr>
                                             <td></td>
                                             <td align="right"><strong>Jumlah Total...</strong></td>
-                                            <td>'.angkrp(totalpot($_GET[id])).'</td>
+                                            <td>'.angkrp(totalpot($r[id_Spm])).'</td>
                                             <td></td>
                                           </tr>
                                         </tfoot>';
@@ -491,58 +516,63 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
 
           												echo '<div id="dropdown14" class="tab-pane">
                                       <form action="modul/act_modverifikasi.php?module=verifikasi&act=lampver" method="post">
-                                        <p> Check-list Kelengkapan Dokumen Pengajuan SPM '.$r[id_Ver].'</p>
-                                        <table class="table table-striped table-bordered">
+                                        <p> Check-list Kelengkapan Dokumen Pengajuan SPM</p>
+                                        <table class="table table-striped table-bordered table-condensed">
+                                          <thead>
                                           <tr>
-                                            <td></td>
-                                            <td><input type="checkbox"></td>
-                                            <td>Jenis Dokumen</td>
-                                            <td>File</td>
-                                            <td>Keterangan</td>
-                                          </tr>';
+                                            <th></th>
+                                            <th><input type="checkbox"></th>
+                                            <th>Jenis Dokumen</th>
+                                            <th>File</th>
+                                            <th>Keterangan</th>
+                                            <th></th>
+                                          </tr>
+                                            </thead>
+                                            <tbody>';
 
-
+                                          function ck_document($id_Cklist, $id_Spm,$aksi,$str) {
+                                            $q = mysql_query("SELECT * FROM uploadberkas
+                                                                WHERE id_Cklist = '$id_Cklist'
+                                                                AND id_Spm = '$id_Spm'");
+                                            $r = mysql_fetch_array($q);
+                                            $hit = mysql_num_rows($q);
+                                            if($str == "file") {
+                                              if($hit > 0) {
+                                                $ck = '<a href="media/'.$_SESSION[thn_Login].'/'.$r[fileupload].'" target="_blank" class="btn btn-success btn-minier"><i class="fa fa-files-o"></i> File Upload</a>';
+                                              } else {
+                                                $ck ="";
+                                              }
+                                            } elseif($str == "comment") {
+                                              $ck = '<input name="Keterangan" type="text" value="'.$r[Keterangan].'">';
+                                            } else {
+                                              $ck = '<button type="submit" name="simpan" value="'.$r[id_Upload].'" class="btn btn-minier btn-primary"><i class="fa fa-save"></i> Simpan</button>';
+                                            }
+                                            return $ck;
+                                          }
 
               													//untuk daftar check list
                                         $q3 = mysql_query("SELECT * FROM cklist a
-                                                          WHERE a.Jenis = '$r[Jenis]'");
+                                                          WHERE a.Jenis = '$r[Jenis]'
+                                                          AND a.Aktiv = 1");
 
                                         $no=1;
 
-                                              while($r=mysql_fetch_array($q3)) {
-                                                echo "<input type=hidden name='id_Cklist[]' value='$r[id_Cklist]'>";
+                                              while($r1=mysql_fetch_array($q3)) {
+                                                echo '<form action="modul/act_modverifikasi.php?module=verifikasi&act=lampver" method="post">';
+                                                echo "<input type=hidden name='id_Ver' value='$_GET[id]'>";
+                                                echo "<input type=hidden name='id_Cklist' value='$r1[id_Cklist]'>";
                                                 echo '<tr>
                                                   <td>'.$no++.'</td>
-                                                  <td><input type="checkbox" checked></td>
-                                                  <td>'.$r[nm_List].'</td>
-                                                  <td><a href="media/'.$_SESSION[thn_Login].'/'.$r[fileupload].'" target="_blank" class="btn btn-success btn-minier">View</a></td>
-                                                  <td><input name="Isian[]" type="text" value="'.$r[Isian].'"></td>
+                                                  <td><input type="checkbox"></td>
+                                                  <td>'.$r1[nm_List].'</td>
+                                                  <td>'.ck_document($r1[id_Cklist],$r[id_Spm],$aksi,'file').'</td>
+                                                  <td>'.ck_document($r1[id_Cklist],$r[id_Spm],$aksi,'comment').'</td>
+                                                  <td>'.ck_document($r1[id_Cklist],$r[id_Spm],$aksi,'save').'</td>
 
-                                                </tr>';
+                                                </tr>
+                                                </form>';
                                               }
-                                        echo '</table>
-
-                                      <div class="clearfix form-actions">
-                                        <div class="col-md-offset-3 col-md-9">
-                                          <input type="hidden" name="id_Ver" value="'.$_GET[id].'">
-                                          <input type="hidden" name="StatusVer" value="'.$r1[StatusVer].'">
-                                          <button class="btn btn-primary" type="submit" name="Simpan">
-                                            <i class="ace-icon fa fa-check bigger-110"></i>
-                                            Simpan
-                                          </button>
-                                          &nbsp; &nbsp; &nbsp;
-                                          <button class="btn" type="reset">
-                                            <i class="ace-icon fa fa-refresh bigger-110"></i>
-                                            Reset
-                                          </button>
-
-                                          &nbsp; &nbsp; &nbsp;
-                                          <a href="?module=verifikasi" class="btn btn-success" >
-                                            <i class="ace-icon fa fa-undo bigger-110"></i>
-                                            Kembali
-                                          </a>
-                                        </div>
-                                      </div>
+                                        echo '</tbody></table>
                                     </form>
                                   </div>
 
@@ -562,9 +592,16 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                                               </div>
                                             </div>
                                             <div class="form-group">
+                                              <label class="col-sm-2 control-label" for="form-field-1"> Informasi Verifikasi </label>
+                                              <div class="col-sm-5">
+                                                <textarea class="form-control" name="InformasiVer">'.$rq[InformasiVer].'</textarea>
+                                              </div>
+                                            </div>
+                                            <div class="form-group">
                                               <label for="inputPassword3" class="col-sm-2 control-label">Status Verifikasi</label>
                                               <div class="col-sm-10">
                                                 <input type="hidden" name="id_Ver" value="'.$rq[id_Ver].'">
+                                                <input type="hidden" name="StatusPengbud" value="'.$rq[StatusPengbud].'">
                                                 <select class="col-xs-10 col-sm-5" name="StatusVer" onchange="" required>';
                                                     $status = array(0 => 'Draf',1=>'Final',2=>'Ditolak' );
                                                     foreach ($status as $key => $value) {
@@ -606,175 +643,22 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
           										</div>
           									</div>';
 
-                            echo '
-                            <!--
-                            <div class="clearfix form-actions">
-          										<div class="col-md-offset-3 col-md-9">
-          											<button class="btn btn-primary" type="submit" name="simpan">
-          												<i class="ace-icon fa fa-check bigger-110"></i>
-          												Simpan
-          											</button>
-                                &nbsp; &nbsp; &nbsp;
-                                <button class="btn" type="reset">
-                                  <i class="ace-icon fa fa-refresh bigger-110"></i>
-                                  Reset
-                                </button>
-
-                                &nbsp; &nbsp; &nbsp;
-                                <a href="?module=verifikasi" class="btn btn-success" >
-                                  <i class="ace-icon fa fa-undo bigger-110"></i>
-                                  Kembali
-                                </a>
-          										</div>
-          									</div>
-                            </form>
-                            -->';
-
-
-
 
 											echo '</div>
 										</div>
 									</div>';
 
 
-
-	break;
-  case 'edit':
-      if($_SESSION['UserLevel']==1) {
-        $sql = mysql_query("SELECT * FROM ttdbukti
-                              WHERE id_Spm = '$_GET[id]'");
-      } else {
-        $sql = mysql_query("SELECT * FROM spm WHERE id_Skpd = '$_SESSION[id_Skpd]'
-                                      AND id_Spm= '$_GET[id]'");
-      }
-      $r = mysql_fetch_array($sql);
-      echo '<form class="form-horizontal" role="form" method="post" action="modul/act_modspm.php?module=spm&act=edit">
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Jenis SPM </label>
-              <div class="col-sm-10">';
-              $jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
-              echo "<select name='Jenis' class='col-xs-10 col-sm-5' id='form-field-1' required>
-                      <option value=''>-Pilih Jenis SPM-</option>";
-                    foreach ($jns_spm as $key => $value) {
-                      if($key == $r[Jenis]) {
-                        echo "<option value='$key' selected>$value</option>";
-                      } else {
-                        echo "<option value=$key>$value</option>";
-                      }
-                    }
-              echo "</select>";
-              echo '</div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Nomor SPM </label>
-              <div class="col-sm-10">
-                <input type="text" id="form-field-1" name="Nomor" placeholder="Nomor SPM" class="col-xs-10 col-sm-5" value="'.$r[Nomor].'" required/>
-                <label class="col-sm-2 control-label" for="form-field-1"> Tanggal</label>
-                <input type="text" id="form-field-1" name="Tanggal" placeholder="Tanggal" class="date-picker" data-date-format="yyyy-mm-dd"  value="'.$r[Tanggal].'" required/>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Anggaran </label>
-              <div class="col-sm-10">
-                <input type="text" id="form-field-1" placeholder="Anggaran SPM" name="Anggaran" class="col-xs-10 col-sm-5" value="'.$r[Anggaran].'"  required/>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Jenis Kegiatan </label>
-              <div class="col-sm-10">
-                <input type="text" id="form-field-1" placeholder="Username" name="JnsKegiatan" class="col-xs-10 col-sm-5"/>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Kepala SKPD </label>
-              <div class="col-sm-10">';
-              $qx = mysql_query("SELECT id,NamaTtd FROM ttdbukti WHERE Jabatan = 1 AND id_Skpd = '$_SESSION[id_Skpd]'");
-              echo "<select name='KepalaSkpd' class='col-xs-10 col-sm-5' id='form-field-1' required>
-                      <option value=''>[Pilih]</option>";
-                    while ($rx = mysql_fetch_array($qx)){
-                      if($rx[id] == $r[KepalaSkpd]) {
-                        echo "<option value='$rx[id]' selected>$rx[NamaTtd]</option>";
-                      } else {
-                        echo "<option value=$rx[id]>$rx[NamaTtd]</option>";
-                      }
-                    }
-              echo "</select>";
-              echo '</div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Bendahara </label>
-              <div class="col-sm-10">';
-              $qx = mysql_query("SELECT id,NamaTtd FROM ttdbukti WHERE Jabatan = 3 AND id_Skpd = '$_SESSION[id_Skpd]'");
-              echo "<select name='Bendahara' class='col-xs-10 col-sm-5' id='form-field-1' required>
-                      <option value=''>[Pilih]</option>";
-                      while ($rx = mysql_fetch_array($qx)){
-                        if($rx[id] == $r[Bendahara]) {
-                          echo "<option value='$rx[id]' selected>$rx[NamaTtd]</option>";
-                        } else {
-                          echo "<option value=$rx[id]>$rx[NamaTtd]</option>";
-                        }
-                      }
-              echo "</select>";
-              echo '</div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Keterangan </label>
-              <div class="col-sm-10">
-                <textarea id="form-field-1" placeholder="Keterangan" name="Keterangan" class="col-xs-10 col-sm-5" >'.$r[Keterangan].'</textarea>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Upload SPM </label>
-              <div class="col-sm-10">
-                <input type="file" accept="image/*" name="fl_Spm" class="col-xs-4 col-sm-4"><a class="btn btn-warning btn-xs" target="_blank" href="media/spm/'.$_SESSION[thn_Login].'/'.$r[fl_Spm].'"><i class="fa fa-image"> </i>Tampilkan</a>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Upload SPP 1 </label>
-              <div class="col-sm-10">
-                <input type="file" accept="image/*" name="fl_Spp1" class="col-xs-10 col-sm-4"><a class="btn btn-warning btn-xs" target="_blank" href="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp1].'"><i class="fa fa-image"> </i>Tampilkan</a>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Upload  SPP 2 </label>
-              <div class="col-sm-10">
-                <input type="file" accept="image/*" name="fl_Spp2" class="col-xs-10 col-sm-4"><a class="btn btn-warning btn-xs" target="_blank" href="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp2].'"><i class="fa fa-image"> </i>Tampilkan</a>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label no-padding-right" for="form-field-1"> Upload SPP 3 </label>
-              <div class="col-sm-10">
-                <input type="file" accept="image/*" name="fl_Spp3" class="col-xs-10 col-sm-4"><a class="btn btn-warning btn-xs" target="_blank" href="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp3].'"><i class="fa fa-image"> </i>Tampilkan</a>
-              </div>
-            </div>';
-            echo "<input type='hidden' name='id_Skpd' value='$_SESSION[id_Skpd]'>";
-            echo "<input type='hidden' name='id_Spm' value='$r[id_Spm]'>";
-            echo '<div class="clearfix form-actions">
-              <div class="col-md-offset-3 col-md-9">
-                <button class="btn btn-info" type="submit">
-                  <i class="ace-icon fa fa-check bigger-110"></i>
-                  Simpan
-                </button>
-
-                &nbsp; &nbsp; &nbsp;
-                <button class="btn" type="reset">
-                  <i class="ace-icon fa fa-undo bigger-110"></i>
-                  Reset
-                </button>
-              </div>
-            </div>
-
-            <div class="hr hr-24"></div>
-            </form>
-
-          ';
   break;
   }//end switch
 } //end tanpa hak akses
 } //end tanpa session
 ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script type="text/javascript">
+$(document).ready(function(){
+    $('#myTable').DataTable();
+});
 
 function md_verspm(id_Spm)
 {
@@ -862,7 +746,19 @@ function vw_tbl(id_BidUrusan)
     });
 }
 
-
+function vw_kegspm(id_Spm)
+{
+  $.ajax({
+    url: 'library/vw_kegspm.php',
+    data: 'id_Spm='+id_Spm,
+    type: "post",
+    dataType: "html",
+    timeout: 10000,
+    success: function(response){
+      $('#vw_kegspm').html(response);
+    }
+    });
+}
 
   //kembali
   $(".batal").click(function(event) {

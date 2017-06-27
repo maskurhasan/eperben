@@ -63,19 +63,17 @@ if ($act == "add" and $module == "verifikasi") {
 			}
 
 } elseif($act == "ubahstatus" and $module == "verifikasi"){
-
-      if(isset($_POST['simpan'])) {
+      if(isset($_POST['simpan']) AND $_POST[StatusPengbud] == 0) {
         $StatusVer = $_POST['StatusVer'];
         $tgl_Ver = $_POST['tgl_Ver'];
         $id_Ver = $_POST['id_Ver'];
+        $InformasiVer = $_POST['InformasiVer'];
 
         $qry = mysql_query("UPDATE verifikasi SET StatusVer = '$StatusVer',
                                             tgl_Ver = '$tgl_Ver',
+                                            InformasiVer = '$InformasiVer',
       																			Update_at=now()
       																		WHERE id_Ver = '$id_Ver'");
-      	//if($_POST['UserLevel']=="Operator" AND !empty(($_POST['berimodul'])) {
-      	//  $qr1 = mysql_query("INSERT INTO aksesmodul(id_User,id_Modul) VALUES (101,SELECT)")
-      	//}
       	if ($qry)
       			{
                 if($StatusVer == 0) {
@@ -89,6 +87,9 @@ if ($act == "add" and $module == "verifikasi") {
       					echo mysql_error();
       			}
 
+      } else {
+        $id_Ver = $_POST['id_Ver'];
+        header('location:../main.php?module=verifikasi&act=add&id='.$id_Ver.'&error=1');
       }
 
 
@@ -99,8 +100,10 @@ if ($act == "add" and $module == "verifikasi") {
           $StatusPengbud = $_POST['StatusPengbud'];
           $tgl_Pengbud = $_POST['tgl_Pengbud'];
           $id_Ver = $_POST['id_Ver'];
+          $InformasiBud = $_POST[InformasiBud];
           $qry = mysql_query("UPDATE verifikasi SET StatusPengbud = '$StatusPengbud',
                                               tgl_Pengbud = '$tgl_Pengbud',
+                                              InformasiBud = '$InformasiBud',
         																			Update_at=now()
         																		WHERE id_Ver = '$id_Ver'");
         	//if($_POST['UserLevel']=="Operator" AND !empty(($_POST['berimodul'])) {
@@ -203,10 +206,11 @@ if ($act == "add" and $module == "verifikasi") {
 
 
 } elseif ($act == "hapusver" and $module == "verifikasi") {
-  //periksa spm jika sdh ada rincian kegiatan 
-  $q1 = mysql_query("SELECT id_Ver FROM verifikasi WHERE StatusVer = 1 AND id_Ver = '$_GET[id]'");
-  $hit = mysql_num_rows($q1);
-        if($hit <= 0) {            
+  //periksa spm jika sdh ada rincian kegiatan
+  $q1 = mysql_query("SELECT StatusVer,StatusPengbud FROM verifikasi
+                                    WHERE id_Ver = '$_GET[id]'");
+  $r1 = mysql_fetch_array($q1);
+        if($r1[StatusVer] == 0 AND $r1[StatusPengbud] == 0) {
             $qry = mysql_query("DELETE FROM verifikasi WHERE id_Ver = '$_GET[id]'");
             if ($qry)
                 {
@@ -223,12 +227,26 @@ if ($act == "add" and $module == "verifikasi") {
 
 } elseif ($act == "lampver" and $module == "verifikasi") {
     //ini untuk mengisi table ketceklist
-        if(isset($_POST[Simpan])) {
+        if(isset($_POST[simpan])) {
           $id_Cklist = $_POST[id_Cklist];
           $id_Ver = $_POST[id_Ver];
-          $Isian =  $_POST[Isian];
+          $Keterangan =  $_POST[Keterangan];
           //jika sstatus verifikasi belum final
           if($_POST[StatusVer]==0) {
+            if(isset($_POST['simpan'])) {
+              //echo $id_Ver;
+              //exit();
+              $sql = "UPDATE uploadberkas SET Keterangan = '$Keterangan' WHERE id_Upload = '$_POST[simpan]'";
+              $q = mysql_query($sql);
+              if($q) {
+                header('Location:../main.php?module=verifikasi&act=add&id='.$id_Ver.'');
+              } else {
+                echo mysql_error();
+              }
+            } else {
+              echo "gagal simpan";
+            }
+            /*
             $qw = mysql_query("DELETE FROM ketcklist WHERE id_Ver = '$id_Ver'");
             if($qw) {
                 for ($i=0 ; $i < count($id_Cklist);$i++) {
@@ -244,22 +262,21 @@ if ($act == "add" and $module == "verifikasi") {
             } else {
               echo "bkn_simpan";
             }
+            */
           }  else {
             //jika sudah final
             echo "<script type=text/javascript>window.alert('Error : Maaf Verifikasi SPM sudah Final')
-                        window.location.href='../main.php?module=verifikasi&act=add&id=$id_Ver'</script>";   
+                        window.location.href='../main.php?module=verifikasi&act=add&id=$id_Ver'</script>";
           }
-        } else { 
-          echo "gagal"; 
+        } else {
+          echo "gagal";
         }
 } elseif ($act == "hapuspengbud" and $module == "verifikasi") {
-  //periksa spm jika sdh ada rincian kegiatan 
-  $q1 = mysql_query("SELECT id_Ver FROM verifikasi 
-                      WHERE StatusVer = 1 
-                      AND StatusPengbud < 1
-                      AND id_Ver = '$_GET[id]'");
-  $hit = mysql_num_rows($q1);
-        if($hit <= 0) {
+  //periksa spm jika sdh ada rincian kegiatan
+  $q1 = mysql_query("SELECT id_Ver,StatusPengbud,StatusVer,StatusSp2d FROM verifikasi
+                      WHERE id_Ver = '$_GET[id]'");
+  $r1 = mysql_fetch_array($q1);
+        if($r1[StatusVer] == 1 AND $r1[StatusPengbud] == 1 AND $r1[StatusSp2d] == 0) {
             $qry = mysql_query("UPDATE verifikasi SET StatusPengbud = 0 WHERE id_Ver = '$_GET[id]'");
             if ($qry)
                 {
@@ -270,21 +287,21 @@ if ($act == "add" and $module == "verifikasi") {
                     echo mysql_error();
                 }
         } else {
-            echo "<script type=text/javascript>window.alert('Error : Maaf Verifikasi SPM sudah Final')
+            echo "<script type=text/javascript>window.alert('Error : Maaf Pengesahan SPM sudah Final')
                         window.location.href='../main.php?module=pengesahanbud'</script>";
         }
 
 }  elseif($act == "hapussp2d" and $module == "sp2d"){
-//periksa spm jika sdh ada rincian kegiatan 
-  $q1 = mysql_query("SELECT id_Ver FROM verifikasi 
-                      WHERE StatusVer = 1 
+//periksa spm jika sdh ada rincian kegiatan
+  $q1 = mysql_query("SELECT id_Ver FROM verifikasi
+                      WHERE StatusVer = 1
                       AND StatusPengbud = 2
                       AND StatusSp2d = 1
                       AND id_Ver = '$_GET[id]'");
   $hit = mysql_num_rows($q1);
-  
+
         if($hit == 1) {
-            $qry = mysql_query("UPDATE verifikasi SET NomorSp2d='', StatusSp2d = 0 
+            $qry = mysql_query("UPDATE verifikasi SET NomorSp2d='', StatusSp2d = 0, tgl_Sp2d = ''
                                                 WHERE id_Ver = '$_GET[id]'");
             if ($qry)
                 {
@@ -299,5 +316,27 @@ if ($act == "add" and $module == "verifikasi") {
                         window.location.href='../main.php?module=sp2d'</script>";
         }
 
+
+} elseif($act == "uploadsp2d" and $module == "sp2d"){
+//periksa spm jika sdh ada rincian kegiatan
+    //exit("uploadsp2d");
+    $id_Skpd = $_POST[id_Skpd];
+    $nm_file = basename($_FILES['fl_sp2d']['name']);
+    $extension = end(explode(".", $nm_file));
+    $gantinama = $id_Skpd."_".acaknmfile()."_".$_SESSION[thn_Login].".".$extension;
+    $nm_folder = "../media/$_SESSION[thn_Login]/sp2d/"; //nama folder simpan gambar
+
+    $pindah_foto = move_uploaded_file($_FILES['fl_sp2d']['tmp_name'], $nm_folder.$gantinama);
+    if(isset($_POST[simpanupload]) AND !empty($nm_file) AND $_POST[StatusSp2d]==2) {
+          $qsy = mysql_query("UPDATE verifikasi SET fl_sp2d = '$gantinama' WHERE id_Ver = '$_POST[id_Ver]'");
+          if($qsy) {
+            header('Location:../main.php?module=sp2d');
+          } else {
+            echo mysql_error();
+          }
+    } else {
+      //header('Location:../main.php?module=spm&act=add&id='.$id_Spm.'');
+      echo "gagalupload";
+    }
 
 }

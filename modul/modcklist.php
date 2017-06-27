@@ -20,19 +20,13 @@ include "modmaster.php";
                 <div class="header">
                   <div class="row">
                     <div class="col-md-6"></div>
-                    <div class="col-md-6">
-                    <div class="input-group pull-right" style="width: 350px;">
-                      <input type="text" name="table_search" class="form-control" placeholder="Search">
-                      <div class="input-group-btn">
-                        <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>';
-                        echo "<button class='btn btn-sm btn-warning btn-fill' name='tambahsubdak' id='tomboltambahsub' onClick=\"window.location.href='?module=cklist&act=add'\"><i class='fa fa-plus'></i> Tambah CekList</button>";
+                    <div class="col-md-6">';
+                        echo "<button class='btn btn-sm btn-primary btn-fill pull-right' name='tambahsubdak' id='tomboltambahsub' onClick=\"window.location.href='?module=cklist&act=add'\"><i class='fa fa-plus-circle'></i> Tambah CekList</button>";
                       echo '</div>
-                    </div>
-                    </div>
                   </div>
                 </div><!-- /.box-header -->
                 <div class="content table-responsive">
-                  <table class="table table-hover table-bordered table-striped">
+                  <table id="myTable" class="table table-hover table-bordered table-striped">
                     <thead>
                       <th></th>
                       <th>Nama List</th>
@@ -54,16 +48,6 @@ include "modmaster.php";
                           </tr>";
                 }
                   echo '<tbody></table>
-
-                <div class="footer">
-                  <ul class="pagination pagination-sm no-margin pull-right">
-                    <li><a href="#">&laquo;</a></li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">&raquo;</a></li>
-                  </ul>
-                </div>
                 </div>
               </div>
             </div>';
@@ -174,7 +158,11 @@ include "modmaster.php";
 } //end tanpa session
 
 ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script type="text/javascript">
+$(document).ready(function(){
+    $('#myTable').DataTable();
+});
 
 function pilih_Urusan(id_Urusan)
 {
@@ -265,8 +253,5 @@ function pilih_Skpd(id_BidUrusan)
     event.preventDefault();
     history.back(1);
 });
-$("#myTable").tablesorter({widgets: ['zebra'],
-  headers: {7: {sorter: true}}
-})
-.tablesorterPager({container: $("#pager")});
+
 </script>

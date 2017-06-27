@@ -24,11 +24,7 @@ include "config/pagination.php";
 
                             <input name="module" type="hidden" value="datakegiatan">
                             <input name="t" type="hidden" value="nm">
-                            <input type="text" name="q" class="form-control input-sm pull-right" placeholder="Cari" size="10">
-                            <div class="input-group-btn">
-                              <button type="submit" class="btn btn-sm btn-default btn-fill"><i class="fa fa-search"></i> Cari</button></form>';
-							              echo "<!--<button type='button' class='btn btn-sm btn-primary btn-fill' name='tambahsubdak' onClick=\"window.location.href='?module=datakegiatan&act=add'\"><i class='fa fa-plus'></i> Tambah Kegiatan</button>-->";
-
+                            <div class="input-group-btn">';
                             echo '</div>
                           </div>
                     </div>
@@ -36,13 +32,14 @@ include "config/pagination.php";
                 </div><!-- /.box-header -->';
 
 			echo '<div class="content table-responsive">
-                        <table class="table table-hover table-striped table-bordered">
-                        <thead>
-                          <tr><th>#</th>
-							<th>Kode</th><th style=width:30%>Nama Kegiatan</th><th>Anggaran</th><th>Sumber Dana</th>
-							<th>Aksi</th></tr>
-                        </thead>
-                        <tbody>';
+              <table id="myTable" class="table table-hover table-striped table-bordered">
+              <thead>
+                <tr class="info"><th>#</th>
+    							<th>Kode</th><th style=width:30%>Nama Kegiatan</th><th>Anggaran</th><th>Sumber Dana</th>
+    							<th>Aksi</th></tr>
+              </thead>
+              <tbody>';
+            /*
             $page = 1;
             if (isset($_GET['page']) && !empty($_GET['page']))
                 $page = (int)$_GET['page'];
@@ -54,7 +51,7 @@ include "config/pagination.php";
               $kode = "AND a.id_Kegiatan = '$q' ";
             }
 
-            $sql = "SELECT b.nm_Kegiatan,a.id_DataKegiatan,a.id_Kegiatan,a.AnggKeg,c.nm_SbDana 
+            $sql = "SELECT b.nm_Kegiatan,a.id_DataKegiatan,a.id_Kegiatan,a.AnggKeg,c.nm_SbDana
                                       FROM kegiatan b, datakegiatan a
                                       LEFT JOIN sumberdana c ON a.id_SbDana = c.id_SbDana
                                       WHERE a.id_Skpd = '$_SESSION[id_Skpd]'
@@ -78,9 +75,31 @@ include "config/pagination.php";
                               echo "</td>
                           </tr>";
             }
+            */
+            $sql = "SELECT b.nm_Kegiatan,a.id_DataKegiatan,a.id_Kegiatan,a.AnggKeg,c.nm_SbDana
+                                      FROM kegiatan b, datakegiatan a
+                                      LEFT JOIN sumberdana c ON a.id_SbDana = c.id_SbDana
+                                      WHERE a.id_Skpd = '$_SESSION[id_Skpd]'
+                                      AND a.id_Kegiatan = b.id_Kegiatan
+                                      AND a.TahunAnggaran = '$_SESSION[thn_Login]'
+                                      $nmkeg $kode ORDER BY a.id_DataKegiatan ASC";
+            $q = mysql_query($sql);
 
+            $no = 1;
+            while ($dt = mysql_fetch_array($q))
+            {
+                  echo "<tr><td>".$no++."</td>
+                          <td>$dt[id_Kegiatan]</td>
+                          <td>$dt[nm_Kegiatan]</td>
+                          <td align=left>".number_format($dt[AnggKeg])."</td>
+						              <td>$dt[nm_SbDana]</td>
+                          <td class=align-center>
+                                    <a class='btn btn-minier btn-primary' href='?module=datakegiatan&act=edit&id=$dt[id_DataKegiatan]'><i class='fa fa-edit fa-lg'></i> Edit</a> ";
+                              echo "</td>
+                          </tr>";
+            }
 			echo '</tbody></table>';
-                  showPagination2($sql);
+                //  showPagination2($sql);
                 echo '</div>
             </div>
             </div>';
@@ -143,10 +162,10 @@ include "config/pagination.php";
 
     break;
     case "edit":
-          $sql = mysql_query("SELECT a.*,b.nm_SbDana FROM datakegiatan a 
-                                LEFT JOIN sumberdana b 
-                                ON a.id_SbDana = b.id_SbDana  
-                                WHERE id_DataKegiatan = '$_GET[id]' 
+          $sql = mysql_query("SELECT a.*,b.nm_SbDana FROM datakegiatan a
+                                LEFT JOIN sumberdana b
+                                ON a.id_SbDana = b.id_SbDana
+                                WHERE id_DataKegiatan = '$_GET[id]'
                                 AND id_Skpd = '$_SESSION[id_Skpd]'");
           $r = mysql_fetch_array($sql);
           //parse id program k jd id
@@ -232,7 +251,7 @@ include "config/pagination.php";
               <div class=form-group>
                   <label class='col-sm-2 control-label'>Anggaran</label>
                     <div class='col-sm-4'>
-                      <input type=text name=AnggKeg placeholder=Anggaran value=$r[AnggKeg]>       
+                      <input type=text name=AnggKeg placeholder=Anggaran value=$r[AnggKeg]>
                     </div>
               </div>
               <div class=form-group>
@@ -254,7 +273,11 @@ include "config/pagination.php";
 } //end tanpa session
 
 ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script type="text/javascript">
+$(document).ready(function(){
+    $('#myTable').DataTable();
+});
 
 function pilih_Urusan(id_Urusan)
 {
@@ -336,8 +359,4 @@ function vw_tbl(id_Program)
     event.preventDefault();
     history.back(1);
 });
-$("#myTable").tablesorter({widgets: ['zebra'],
-  headers: {7: {sorter: true}}
-})
-.tablesorterPager({container: $("#pager")});
 </script>

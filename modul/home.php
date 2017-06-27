@@ -18,7 +18,7 @@ if (empty($_SESSION[UserName]) AND empty($_SESSION[PassWord])) {
   										<?php echo $_SESSION['nm_Lengkap'] ?>
 
   									</strong>,
-  	                 E-Perbendaharaan Kabupaten Luwu Utara
+  	                 <?php echo $appName; ?>
   								</div>
 
                   <div class="row">

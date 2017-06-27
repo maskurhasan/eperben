@@ -9,23 +9,21 @@ $cek=user_akses($_GET['module'],$_SESSION['id_User']);
 if($cek==1 OR $_SESSION['UserLevel']=='1') {
 
 include "../config/koneksi.php";
-include "../config/errormode.php";
-
-include "modmaster.php";
+include "../config/fungsi.php";
 
   switch ($_GET['act']) {
     default:
           //----------------------------------
         //tentukan urusan skpd
-       
+
         if($_SESSION['UserLevel']==1) {
-                 echo '<div class="col-md-8">
+                 echo '<div class="col-md-12">
                         <div class="card">
                           <div class="header">
                             <p class="category">Data Profil SKPD</p>
                           </div>
                           <div class="content table-responsive">
-                            <table class="table table-bordered table-striped">
+                            <table id="myTable" class="table table-bordered table-striped">
                               <thead>
                               <tr>
                                 <th></th><th>Nama SKPD</th><th>Kepala SKPD</th>
@@ -39,7 +37,8 @@ include "modmaster.php";
                                         <td>".$no++."</td>
                                         <td>$dt[nm_Skpd]</td>
                                         <td>$dt[nm_Kepala]</td>
-                                        <td class=align-center><a href='?module=skpd&act=edit&id=$dt[id_Skpd]'><i class='fa fa-edit fa-lg'></i> Edit</a>
+                                        <td class=align-center>
+                                          <a class='btn btn-minier btn-primary' href='?module=skpd&act=edit&id=$dt[id_Skpd]'><i class='fa fa-edit fa-lg'></i> Edit</a>
                                             </td>
                                         </tr>";
                               }
@@ -153,7 +152,32 @@ echo '<div class="col-md-8">
                       echo '</select>
                     </div>
                   </div>
- 
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">Rek. Bank</label>
+                    <div class="col-sm-4">';
+                      echo "<select class='form-control' name='Bank' onchange=''>";
+
+                          foreach ($arrBank as $key => $value) {
+                            if($key == $r[Bank]) {
+                              echo "<option value='$key' selected>$value</option>";
+                            } else {
+                              echo "<option value='$key'>$value</option>";
+                            }
+                          }
+                      echo '</select>
+                    </div>
+                    <label for="inputPassword3" class="col-sm-2 control-label">No. Rek</label>
+                    <div class="col-sm-4">
+                      <input class="form-control" type="text" name="NoRek" value="'.$r[NoRek].'">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputPassword3" class="col-sm-2 control-label">NPWP</label>
+                    <div class="col-sm-10">
+                      <input class="form-control" type="text" name="Npwp" value="'.$r[Npwp].'">
+                    </div>
+                  </div>
+
                   <hr>
                 <div class="box">
                   <input type=hidden name=id_Skpd value="'.$r[id_Skpd].'">
@@ -172,7 +196,11 @@ echo '<div class="col-md-8">
 } //end tanpa hak akses
 } //end tanpa session
 ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script type="text/javascript">
+$(document).ready(function(){
+    $('#myTable').DataTable();
+});
 
 function pilih_Urusan(id_Urusan)
 {

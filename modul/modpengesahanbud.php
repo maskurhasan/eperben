@@ -49,23 +49,17 @@ function totalrealisasi($id_Spm)
                   <div class="header">
                     <div class="row">
                       <div class="col-md-6"></div>
-                      <div class="col-md-6">
-                      <div class="input-group pull-right" style="width: 350px;">
-                        <input type="text" name="table_search" class="form-control" placeholder="Search">
-                        <div class="input-group-btn">
-                          <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>';
-                          echo "<button class='btn btn-sm btn-warning btn-fill' name='tambahsubdak' onClick=\"window.location.href='?module=pengesahanbud&act=daftarspm'\"><i class='fa fa-plus'></i> Tambah Pengesahan SPM</button>";
+                      <div class="col-md-6">';
+                          echo "<button class='btn btn-sm btn-primary btn-fill pull-right' name='tambahsubdak' onClick=\"window.location.href='?module=pengesahanbud&act=daftarspm'\"><i class='fa fa-plus-circle'></i> Tambah Pengesahan SPM</button>";
                         echo '</div>
-                      </div>
-                      </div>
                     </div>
                   </div>
                   <div class="content table-responsive">
-                    <table id="tabledata" class="table table-striped table-bordered table-hover">
+                    <table id="myTable" class="table table-striped table-bordered table-hover">
                       <thead>
                       <tr>
                         <th></th><th>Nomor</th><th>Tanggal</th>
-                        <th>Jenis</th><th>Anggaran</th><th>SKPD</th><th>Status Pengesahan</th><th></th>
+                        <th>Jenis</th><th>Nilai SPM</th><th>SKPD</th><th>Status Pengesahan</th><th></th>
                       </tr>
                       </thead>
                       <tbody>';
@@ -130,24 +124,17 @@ function totalrealisasi($id_Spm)
             <div class="header">
               <div class="row">
                 <div class="col-md-6">Daftar SPM Belum Disahkan</div>
-                <div class="col-md-6">
-                <div class="input-group pull-right" style="width: 350px;">
-                  <input type="text" name="table_search" class="form-control" placeholder="Search">
-                  <div class="input-group-btn">
-                    <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>
-                    <a href="?module=pengesahanbud" class="btn btn-sm btn-danger btn-fill"><i class="fa fa-undo"></i> Kembali</a>';
-                    echo "<!--<button class='btn btn-sm btn-warning btn-fill' name='tambahsubdak' onClick=\"window.location.href='?module=spm&act=add'\"><i class='fa fa-plus'></i> Tambah SPM</button>-->";
-                  echo '</div>
-                </div>
-                </div>
+                <div class="col-md-6">';
+                  echo "<a href='?module=pengesahanbud' class='btn btn-sm btn-danger btn-fill pull-right' role='button' id='id_Spm'><i class='fa fa-reply'></i> Kembali</a>";
+                echo '</div>
               </div>
             </div>
             <div class="content table-responsive">
-              <table id="tabledata" class="table table-striped table-bordered table-hover">
+              <table id="myTable" class="table table-striped table-bordered table-hover">
                 <thead>
                 <tr>
                   <th></th><th>Nomor</th><th>Tanggal</th>
-                  <th>Jenis</th><th>Anggaran</th><th>SKPD</th><th>Verifikator</th><th></th>
+                  <th>Jenis</th><th>Nilai SPM</th><th>SKPD</th><th>Verifikator</th><th></th>
                 </tr>
                 </thead>
                 <tbody>';
@@ -252,8 +239,9 @@ function totalrealisasi($id_Spm)
                             AND c.StatusPengbud <> 0 ";
         $q = mysql_query($sql);
         $dt = mysql_fetch_array($q);
-        $jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
+
         $jns = $dt['Jenis'];
+        $stt = $dt[StatusSpm];
 
         //putus jika status pengesahan == 0
         if($dt[StatusPengbud]==0) {
@@ -267,19 +255,19 @@ function totalrealisasi($id_Spm)
           <div class="profile-info-row">
             <div class="profile-info-name"> Jenis SPM </div>
             <div class="profile-info-value">
-              '.$jns_spm[$jns].' '.$dt[id_Ver].'
+              '.$jns_spm[$jns].'
             </div>
           </div>
           <div class="profile-info-row">
-            <div class="profile-info-name"> Nomor</div>
+            <div class="profile-info-name"> Nomor SPM</div>
             <div class="profile-info-value">
-              '.$dt['Nomor'].'  Tanggal '.$dt['Tanggal'].'
+              '.$dt['Nomor'].',  Tanggal : '.tgl_indo($dt['Tanggal']).'
             </div>
           </div>
           <div class="profile-info-row">
-            <div class="profile-info-name"> Anggaran </div>
+            <div class="profile-info-name"> Nilai SPM </div>
             <div class="profile-info-value">
-              '.$dt['Anggaran'].'
+              '.angkrp($dt['Anggaran']).'
             </div>
           </div>
           <div class="profile-info-row">
@@ -294,7 +282,7 @@ function totalrealisasi($id_Spm)
         echo '<div class="col-md-6">
         <div class="profile-user-info profile-user-info-striped">
           <div class="profile-info-row">
-            <div class="profile-info-name"> Verifikator oleh </div>
+            <div class="profile-info-name"> Peneliti oleh </div>
             <div class="profile-info-value">
               '.$dt[nm_Lengkap].'
             </div>
@@ -302,19 +290,19 @@ function totalrealisasi($id_Spm)
           <div class="profile-info-row">
             <div class="profile-info-name"> Tanggal</div>
             <div class="profile-info-value">
-              '.$dt['tgl_Ver'].'
+              '.tgl_indo($dt['tgl_Ver']).'
             </div>
           </div>
           <div class="profile-info-row">
-            <div class="profile-info-name"> Anggaran </div>
+            <div class="profile-info-name"> Catatan  </div>
             <div class="profile-info-value">
-              '.$dt['Anggaran'].'
+              '.$dt['InformasiVer'].'
             </div>
           </div>
           <div class="profile-info-row">
-            <div class="profile-info-name"> SKPD </div>
+            <div class="profile-info-name"> Status BUD </div>
             <div class="profile-info-value">
-              '.$dt['nm_Skpd'].'
+              '.$status[$stt].'
             </div>
           </div>
         </div>
@@ -326,7 +314,7 @@ function totalrealisasi($id_Spm)
         echo '<div class="col-sm-12 widget-container-col">
 										<div class="widget-box transparent">
 											<div class="widget-header">
-												<h4 class="widget-title lighter">Transparent Box</h4>
+												<h4 class="widget-title lighter">Rincian SPM</h4>
 
 												<div class="widget-toolbar no-border">
 													<a href="#" data-action="settings">
@@ -357,11 +345,11 @@ function totalrealisasi($id_Spm)
           												</li>
 
           												<li>
-          													<a data-toggle="tab" href="#profile4"><i class="ace-icon fa fa-folder"></i> Lampiran Bukti</a>
+          													<a data-toggle="tab" href="#profile4"><i class="ace-icon fa fa-list"></i> Potongan SPM</a>
           												</li>
 
           												<li>
-          													<a data-toggle="tab" href="#dropdown14"><i class="ace-icon fa fa-check"></i> Check-list Kelengkapan</a>
+          													<a data-toggle="tab" href="#dropdown14"><i class="ace-icon fa fa-check"></i> Check-list Dokumen</a>
           												</li>
 
                                   <li>
@@ -396,7 +384,7 @@ function totalrealisasi($id_Spm)
                                       }
 
                                       $no=1;
-                                      while($dt = mysql_fetch_array($sql1)) {
+                                      while($dt1 = mysql_fetch_array($sql1)) {
                                         //$jns_spm = array(1=>'SPM-UP',2=>'SPM-GU',3=>'SPM-LS',4=>'SPM-LS Gaji & Tunjangan',5=>'SPM-TU' );
                                         //$jns = $dt['Jenis'];
 
@@ -405,9 +393,9 @@ function totalrealisasi($id_Spm)
 
                                         echo "<tr>
                                                 <td>".$no++."</td>
-                                                <td>$dt[nm_Kegiatan]</td>
-                                                <td>".angkrp($dt[AnggKeg])."</td>
-                                                <td>".angkrp($dt[Nilai])."</td>
+                                                <td>$dt1[nm_Kegiatan]</td>
+                                                <td>".angkrp($dt1[AnggKeg])."</td>
+                                                <td>".angkrp($dt1[Nilai])."</td>
                                               </tr>";
                                       }
 
@@ -416,107 +404,144 @@ function totalrealisasi($id_Spm)
                                             <tr>
                                               <td></td>
                                               <td align="right"><strong>Jumlah Total...</strong></td>
-                                              <td>'.angkrp(totalangg($_GET[id])).'</td>
-                                              <td>'.angkrp(totalspm($_GET[id])).'</td>
+                                              <td>'.angkrp(totalangg($dt[id_Spm])).'</td>
+                                              <td>'.angkrp(totalspm($dt[id_Spm])).'</td>
                                             </tr>
                                           </tfoot>';
                                     echo '</table>';
           												echo '</div>
-          												<div id="profile4" class="tab-pane">
-          													<p>Lampiran Bukti SPM / SPP</p>
-                                          <ul class="ace-thumbnails clearfix">';
-                                            $q = mysql_query("SELECT a.fl_Spm,a.fl_Spp1,a.fl_Spp2,a.fl_Spp3 FROM spm a, verifikasi b 
-                                                              WHERE a.id_Spm = b.id_Spm 
-                                                              AND b.id_Ver = '$_GET[id]'");
-                                            $r = mysql_fetch_array($q);
-                                            echo '<li>
-                                              <a href="media/spm/'.$_SESSION[thn_Login].'/'.$r[fl_Spm].'" data-rel="colorbox" target="_blank">
-                                                <img width="150" height="150" alt="150x150" src="media/spm/'.$_SESSION[thn_Login].'/'.$r[fl_Spm].'" />
-                                                <div class="text">
-                                                  <div class="inner bottom">SPM</div>
-                                                </div>
-                                              </a>
-                                            </li>
+          												<div id="profile4" class="tab-pane">';
 
-                                            <li>
-                                              <a href="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp1].'" data-rel="colorbox" target="_blank">
-                                                <img width="150" height="150" alt="150x150" src="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp1].'" />
-                                                <div class="text">
-                                                  <div class="inner bottom">SPP-1</div>
-                                                </div>
-                                              </a>
-                                            </li>
+                                    echo '<table id="tabledata" class="table table-striped table-bordered">
+                                      <thead>
+                                      <tr>
+                                        <th></th><th>Jenis Potongan</th>
+                                        <th>Nilai</th><th></th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>';
 
-                                            <li>
-                                              <a href="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp2].'" data-rel="colorbox" target="_blank">
-                                                <img width="150" height="150" alt="150x150" src="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp2].'" />
-                                                <div class="text">
-                                                  <div class="inner bottom">SPP-2</div>
-                                                </div>
-                                              </a>
-                                            </li>
+                                      //data yang ditampilkan pada halaman user sesuai dengan role
+                                      function totalpot($id_Spm)
+                                      {
+                                        $sql= mysql_query("SELECT SUM(NilaiPotongan) AS total FROM potonganspm
+                                                            WHERE id_Spm = '$id_Spm'");
+                                        $r = mysql_fetch_array($sql);
+                                        return $r[total];
+                                      }
 
-                                            <li>
-                                              <a href="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp3].'" data-rel="colorbox" target="_blank">
-                                                <img width="150" height="150" alt="150x150" src="media/spp/'.$_SESSION[thn_Login].'/'.$r[fl_Spp3].'" />
-                                                <div class="text">
-                                                  <div class="inner bottom">SPP-3</div>
-                                                </div>
-                                              </a>
-                                            </li>
-                                            
-                                          </ul>';
+                                      $sql2= mysql_query("SELECT * FROM spm a, potonganspm b
+                                                            WHERE a.id_Spm = b.id_Spm
+                                                            AND a.id_Spm = '$dt[id_Spm]'");
 
+
+                                      $no=1;
+                                      while($dt2 = mysql_fetch_array($sql2)) {
+
+                                        $jsp = $jnspotongan[$dt2[JnsPotongan]];
+                                        echo "<tr>
+                                                <td>".$no++."</td>
+                                                <td>$jsp</td>
+                                                <td>".angkrp($dt2[NilaiPotongan])."</td>
+                                                <td class=align-center><button role='button' class='btn btn-minier btn-success' href='#modal-form-editpotongan' id='id_PotonganSpm' value='$dt2[id_PotonganSpm]' data-toggle='modal' onClick='md_editpotongan(this.value)'><i class='fa fa-edit fa-lg'></i> Edit</button> ";
+                                                    echo "<a  class='btn btn-minier btn-danger' href='modul/act_modspm.php?module=spm&act=delpotongan&id=$dt2[id_PotonganSpm]&idx=$_GET[id]' onclick=\"javascript: return confirm('Anda yakin hapus ?')\"><i class='fa fa-trash-o fa-lg'></i> Hapus</a>";
+                                                echo '</td>
+                                              </tr>';
+                                      }
+
+                                    echo '</tbody>';
+                                    //footer
+                                    echo '<tfoot>
+                                            <tr>
+                                              <td></td>
+                                              <td align="right"><strong>Jumlah Total...</strong></td>
+                                              <td>'.angkrp(totalpot($dt[id_Spm])).'</td>
+                                              <td></td>
+                                            </tr>
+                                          </tfoot>';
+                                    echo '</table>';
                                   echo '</div>
 
           												<div id="dropdown14" class="tab-pane">
-                                    <p> Check-list Kelengkapan Dokumen Pengajuan SPM </p>';    
-                                        //tampilkan data dari table verifikasi
-                                        $q1 = mysql_query("SELECT a.Jenis,b.id_Ver,b.StatusVer FROM spm a, verifikasi b 
-                                                            WHERE b.id_Ver = '$_GET[id]' 
-                                                            AND a.id_Spm = b.id_Spm ");
-                                        $r1 = mysql_fetch_array($q1);
+                                    <p> Check-list Kelengkapan Dokumen Pengajuan SPM</p>
+                                    <table class="table table-striped table-bordered">
+                                      <thead>
+                                      <tr>
+                                        <th></th>
+                                        <th><input type="checkbox"></th>
+                                        <th>Jenis Dokumen</th>
+                                        <th>File</th>
+                                        <th>Catatan verifikasi</th>
+                                      </tr>
+                                        </thead>
+                                        <tbody>';
 
-                                        //untuk daftar check list
-                                        $q = mysql_query("SELECT a.*,b.Isian FROM cklist a 
-                                                          LEFT JOIN ketcklist b 
-                                                          ON a.id_Cklist = b.id_Cklist 
-                                                          AND b.id_Ver = '$r1[id_Ver]'
-                                                          WHERE a.Jenis = '$r1[Jenis]'");
+                                      function ck_document($id_Cklist, $id_Spm,$aksi,$str) {
+                                        $q = mysql_query("SELECT * FROM uploadberkas
+                                                            WHERE id_Cklist = '$id_Cklist'
+                                                            AND id_Spm = '$id_Spm'");
+                                        $r = mysql_fetch_array($q);
+                                        $hit = mysql_num_rows($q);
+                                        if($str == "file") {
+                                          if($hit > 0) {
+                                            $ck = '<a href="media/'.$_SESSION[thn_Login].'/'.$r[fileupload].'" target="_blank" class="btn btn-success btn-minier"><i class="fa fa-files-o"></i> File Upload</a>';
+                                          } else {
+                                            $ck ="";
+                                          }
+                                        } elseif($str == "comment") {
+                                          $ck = $r[Keterangan];
+                                        } else {
+                                          $ck = '<button type="submit" name="simpan" value="'.$r[id_Upload].'" class="btn btn-minier btn-primary"><i class="fa fa-save"></i> Simpan</button>';
+                                        }
+                                        return $ck;
+                                      }
 
-                                        $no=1;
-                                        echo '<table class="table table-condensed">';
-                                              while($r=mysql_fetch_array($q)) {
-                                                echo "<input type=hidden name='id_Cklist[]' value='$r[id_Cklist]'>";
-                                                echo '<tr>
-                                                  <td>'.$no++.'</td><td><input type="checkbox" checked></td><td>'.$r[nm_List].'</td><td><input name="Isian[]" type="text" value="'.$r[Isian].'"></td>
-                                                </tr>';
-                                              }
-                                        echo '</table>
+                                    //untuk daftar check list
+                                    $q3 = mysql_query("SELECT * FROM cklist a
+                                                      WHERE a.Jenis = '$dt[Jenis]'
+                                                      AND a.Aktiv = 1");
 
+                                    $no=1;
+
+                                          while($r1=mysql_fetch_array($q3)) {
+                                            echo '<tr>
+                                              <td>'.$no++.'</td>
+                                              <td><input type="checkbox"></td>
+                                              <td>'.$r1[nm_List].'</td>
+                                              <td>'.ck_document($r1[id_Cklist],$dt[id_Spm],$aksi,'file').'</td>
+                                              <td>'.ck_document($r1[id_Cklist],$dt[id_Spm],$aksi,'comment').'</td>
+                                            </tr>';
+                                          }
+                                    echo '</tbody></table>
                                   </div>
 
                                   <div id="status" class="tab-pane">';
                                     //ini untuk mengubah status dari spm yg diajukan
                                     echo '<form action="modul/act_modverifikasi.php?module=pengesahanbud&act=pengebud" method="post">';
-                                          $qq = mysql_query("SELECT * FROM verifikasi WHERE id_Ver = '$_GET[id]'");
-                                          $rq = mysql_fetch_array($qq);
+                                          $dt[tgl_Pengbud] == "0000-00-00" ? $tglbud = "$_SESSION[thn_Login]-01-01" : $tglbud = $dt[tgl_Pengbud];
           													echo '<div class="form-horizontal">
                                             <div class="form-group">
                                               <label class="col-sm-2 control-label" for="form-field-1"> Tgl Pengesahan </label>
                                               <div class="col-sm-10">
-                                                <input type="text" id="form-field-1" name="tgl_Pengbud" value="'.$rq[tgl_Pengbud].'" placeholder="Tanggal" class="date-picker" data-date-format="yyyy-mm-dd" required/>
+                                                <input type="text" id="form-field-1" name="tgl_Pengbud" value="'.$tglbud.'" placeholder="Tanggal" class="date-picker" data-date-format="yyyy-mm-dd" required/>
+                                              </div>
+                                            </div>
+                                            <div class="form-group">
+                                              <label class="col-sm-2 control-label" for="form-field-1"> Informasi BUD </label>
+                                              <div class="col-sm-5">
+                                                <textarea class="form-control" name="InformasiBud">'.$dt[InformasiBud].'</textarea>
                                               </div>
                                             </div>
                                             <div class="form-group">
                                               <label for="inputPassword3" class="col-sm-2 control-label">Status Pengesahan</label>
                                               <div class="col-sm-10">
-                                                <input type="hidden" name="id_Ver" value="'.$rq[id_Ver].'">
-                                                <input type="hidden" name="StatusSp2d" value="'.$rq[StatusSp2d].'">
+                                                <input type="hidden" name="id_Ver" value="'.$dt[id_Ver].'">
+                                                <input type="hidden" name="StatusPengbud" value="'.$dt[StatusPengbud].'">
+                                                <input type="hidden" name="StatusSp2d" value="'.$dt[StatusSp2d].'">
                                                 <select class="col-xs-10 col-sm-5" name="StatusPengbud" onchange="" required>';
                                                     $status = array(1 => 'Draf',2=>'Final / Sahkan',3=>'Ditolak' );
                                                     foreach ($status as $key => $value) {
-                                                      if($key == $rq[StatusPengbud]) {
+                                                      if($key == $dt[StatusPengbud]) {
                                                         echo "<option value='$key' selected>$value</option>";
                                                       } else {
                                                         echo "<option value='$key'>$value</option>";
@@ -553,7 +578,7 @@ function totalrealisasi($id_Spm)
           												echo '</div>
           										</div>
           									</div>';
-                            
+
 
 
 
@@ -698,8 +723,11 @@ function totalrealisasi($id_Spm)
 } //end tanpa hak akses
 } //end tanpa session
 ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script type="text/javascript">
-
+$(document).ready(function(){
+    $('#myTable').DataTable();
+});
 function md_pengbud(id_Spm)
 {
   $.ajax({

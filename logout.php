@@ -15,7 +15,7 @@ GNU General Public License v2 (links provided above) for more details.
 
   session_start();
   session_destroy();
-  header('location:login.html');
+  header('location:index.php');
 
 
 

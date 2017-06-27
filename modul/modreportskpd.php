@@ -23,7 +23,8 @@ if($cek==1 OR $_SESSION['UserLevel']=='1') {
                 <p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='rincspm' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Rincian SPM</button></p>
                 <p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='realisasi' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Realisasi Anggaran</button></p>
                 <p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='kartukendali' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Kartu Kendali Kegiatan</button></p>
-				        <p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='rfkmodel2' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Realisasi Fisik & Keuangan Model 2</button></p>";
+                <p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='potonganspm' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Potongan SPM</button></p>
+				        <!--<p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='rfkmodel2' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Realisasi Fisik & Keuangan Model 2</button></p>-->";
         } elseif($_SESSION[UserLevel]==3) {
           echo "<p><button class='btn btn-md btn-info btn-fill btn-block' type=button id=id_Cetak value='verifikasi' onClick='ax_form_cetak(this.value)'><i class='pe-7s-note2'></i> Laporan Verifikasi</button></p>";
 

@@ -43,15 +43,16 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>E-Perben</title>
+		<title>La-KUMIS</title>
 
 		<meta name="description" content="Common form elements and layouts" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
-		<link rel="stylesheet" href="assets/font-awesome/4.2.0/css/font-awesome.min.css" />
-    <!--<script src="https://use.fontawesome.com/dd9be7b33d.js"></script>
+    <link rel="stylesheet" href="assets/font-awesome/4.2.0/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" />
+    <!--<script src="https://use.fontawesome.com/e71dbd0ebe.js"></script>-->
 
 
 		<!-- page specific plugin styles -->
@@ -61,7 +62,8 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 		<link rel="stylesheet" href="assets/css/bootstrap-timepicker.min.css" />
 		<link rel="stylesheet" href="assets/css/daterangepicker.min.css" />
 		<link rel="stylesheet" href="assets/css/bootstrap-datetimepicker.min.css" />
-		<link rel="stylesheet" href="assets/css/colorpicker.min.css" />
+    <link rel="stylesheet" href="assets/css/colorpicker.min.css" />
+		<link rel="stylesheet" href="assets/css/fa_color_convert.css" />
 
 		<!-- text fonts -->
 		<link rel="stylesheet" href="assets/fonts/fonts.googleapis.com.css" />
@@ -90,7 +92,7 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 		<![endif]-->
 	</head>
 
-	<body class="no-skin">
+	<body class="skin-2 no-skin">
 		<div id="navbar" class="navbar navbar-default">
 			<script type="text/javascript">
 				try{ace.settings.check('navbar' , 'fixed')}catch(e){}
@@ -110,12 +112,16 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 				<div class="navbar-header pull-left">
 					<a href="index.html" class="navbar-brand">
 						<small>
-							<i class="fa fa-leaf"></i>
-							E-Perbend Luwu Utara
+              <img src="assets/images/logolutra.png" alt="logo" class="" style="width: 25px; height:25px;"></img>
+							<?echo $appName; ?>
 						</small>
+            <span class="label label-success">LAyanan KeUangan Masamba Inde mi te Sola</span>
 					</a>
 				</div>
+<?php
+//ini untuk notifikasi / bisa jg dengan SMS
 
+?>
 				<div class="navbar-buttons navbar-header pull-right" role="navigation">
 					<ul class="nav ace-nav">
 						<li class="grey">
@@ -393,7 +399,7 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 								</li>
 
 								<li>
-									<a href="profile.html">
+									<a href="?module=user">
 										<i class="ace-icon fa fa-user"></i>
 										Profile
 									</a>
@@ -519,6 +525,15 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 							</li>
 
               <li class="">
+								<a href="?module=aksesskpd">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Akses SKPD
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+              <li class="">
 								<a href="?module=setting">
 									<i class="menu-icon fa fa-caret-right"></i>
 									Setting
@@ -555,6 +570,12 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
                     <a href="?module=spm">
                       <i class="menu-icon fa fa-book"></i>
                       <span class="menu-text"> SPM</span>
+                    </a>
+                  </li>
+                  <li class="">
+                    <a href="?module=datausaha">
+                      <i class="menu-icon fa fa-briefcase"></i>
+                      <span class="menu-text"> Data Perusahaan</span>
                     </a>
                   </li>';
           } elseif($_SESSION[UserLevel]==3) {
@@ -608,6 +629,12 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
             <a href="?module=sp2d">
               <i class="menu-icon fa fa-list-alt"></i>
               <span class="menu-text"> SP2D</span>
+            </a>
+          </li>
+          <li class="">
+            <a href="?module=berkas">
+              <i class="menu-icon fa fa-cloud-upload"></i>
+              <span class="menu-text"> Berkas</span>
             </a>
           </li>
           <?php
@@ -827,8 +854,8 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 				<div class="footer-inner">
 					<div class="footer-content">
 						<span class="bigger-120">
-							<span class="blue bolder">Ace</span>
-							Application &copy; 2013-2014
+							<span class="blue bolder">BPKAD</span>
+							La-KUMIS &copy; 2017
 						</span>
 
 						&nbsp; &nbsp;
@@ -857,7 +884,8 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 		<!-- basic scripts -->
 
 		<!--[if !IE]> -->
-		<script src="assets/js/jquery.2.1.1.min.js"></script>
+		<!--<script src="assets/js/jquery.2.1.1.min.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 		<!-- <![endif]-->
 
@@ -887,6 +915,8 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 		<!--[if lte IE 8]>
 		  <script src="assets/js/excanvas.min.js"></script>
 		<![endif]-->
+
+    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 		<script src="assets/js/jquery-ui.custom.min.js"></script>
 		<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
 		<script src="assets/js/chosen.jquery.min.js"></script>

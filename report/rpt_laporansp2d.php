@@ -6,7 +6,6 @@ if (empty($_SESSION['UserName']) AND empty($_SESSION['PassWord'])) {
 } else {
   include "../config/koneksi.php";
   include "../config/fungsi.php";
-  include "../config/fungsi_indotgl.php";
   include "../assets/css/printer.css";
 
   //filter
@@ -84,7 +83,7 @@ window.print();
                                       WHERE a.id_Spm = b.id_Spm
                                       AND c.id_User = a.id_User
                                       AND b.id_Skpd = d.id_Skpd
-                                      AND a.StatusSp2d =
+                                      AND a.StatusSp2d = 2
                                       $filt1 $filt2 $filt3
                                       GROUP BY b.id_Spm");
                   }

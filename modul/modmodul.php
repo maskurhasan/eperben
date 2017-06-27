@@ -18,23 +18,15 @@ include "modmaster.php";
         echo '<div class="col-md-12">
               <div class="card">
                 <div class="header">
-                  <h4 class="title">Daftar Modul</h4>
-                  <p class="category">Nama dan Hak Akses Modul</p>
                   <div class="row">
                     <div class="col-md-6"></div>
-                    <div class="col-md-6">
-                    <div class="input-group pull-right" style="width: 350px;">
-                      <input type="text" name="table_search" class="form-control" placeholder="Search">
-                      <div class="input-group-btn">
-                        <button class="btn btn-sm btn-info btn-fill"><i class="fa fa-search"></i> Cari</button>';
-                        echo "<button class='btn btn-sm btn-info btn-fill' name='tambahsubdak' id='tomboltambahsub' onClick=\"window.location.href='?module=modul&act=add'\"><i class='fa fa-plus'></i> Tambah Modul</button>";
+                    <div class="col-md-6">';
+                        echo "<button class='btn btn-sm btn-primary btn-fill pull-right' name='tambahsubdak' id='tomboltambahsub' onClick=\"window.location.href='?module=modul&act=add'\"><i class='fa fa-plus-circle'></i> Tambah Modul</button>";
                       echo '</div>
-                    </div>
-                    </div>
                   </div>
                 </div><!-- /.box-header -->
                 <div class="content table-responsive">
-                  <table class="table table-hover">
+                  <table id="myTable" class="table table-striped table-bordered table-hover">
                     <thead>
                     <th>#</th>
                         <th>Nama Modul</th><th>Link</th><th>Status</th>
@@ -45,7 +37,7 @@ include "modmaster.php";
                      $sql = mysql_query("SELECT * FROM modul");
                   $no=1;
                   while($dt = mysql_fetch_array($sql)) {
-                  
+
                   $lvl = array(1=>'Admin',2=>'Operator SKPD',3=>'Verifikator',4=>'BUD',5=>'OP.SP2D');
                   $Level = $dt[UserLevel];
                   echo "<tr><td>".$no++."</td>
@@ -77,12 +69,8 @@ include "modmaster.php";
 
       echo '<div class="col-md-8">
             <div class="card">
-              <div class="header">
-                <h4 class="title">Tambah Modul</h4>
-                  <p class="category">Tambah Modul Akses Menu</p>
-              </div>
               <div class="content">';
-              echo "<form method=post action='modul/act_modmodul.php?module=modul&act=add'>";
+              echo "<form class='form-horizontal' method=post action='modul/act_modmodul.php?module=modul&act=add'>";
                 echo '<div class="box-body">
                   <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">Nama Modul</label>
@@ -134,11 +122,9 @@ include "modmaster.php";
         echo '<div class="col-md-8">
             <div class="card">
               <div class="header">
-                <h4 class="title">Edit Modul</h4>
-                  <p class="category">Edit Modul Akses Menu</p>
               </div>
               <div class="content">';
-              echo "<form method=post action='modul/act_modmodul.php?module=modul&act=edit'>";
+              echo "<form method=post class='form-horizontal' action='modul/act_modmodul.php?module=modul&act=edit'>";
                 echo '<div class="box-body">
                   <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">Nama Modul</label>
@@ -192,7 +178,11 @@ include "modmaster.php";
 } //end tanpa session
 
 ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script type="text/javascript">
+$(document).ready(function(){
+    $('#myTable').DataTable();
+});
 
 function pilih_Urusan(id_Urusan)
 {
@@ -283,8 +273,5 @@ function pilih_Skpd(id_BidUrusan)
     event.preventDefault();
     history.back(1);
 });
-$("#myTable").tablesorter({widgets: ['zebra'],
-  headers: {7: {sorter: true}}
-})
-.tablesorterPager({container: $("#pager")});
+
 </script>

@@ -16,9 +16,9 @@ if ($act == "add" and $module == "skpd") {
         $id_Eselon = $_POST['id_Eselon'];
         $pagu_Dana = $_POST['pagu_Dana'];
         $visimisi = $_POST['visimisi'];
-        $apbd = $_POST['apbd'];
-        $dak = $_POST['dak'];
-        $apbn = $_POST['apbn'];
+        $Bank = $_POST['Bank'];
+        $NoRek = $_POST['NoRek'];
+        $Npwp = $_POST['Npwp'];
 
         $qry = mysql_query("INSERT INTO skpd (nm_Skpd,
                                               nm_Kepala,
@@ -27,9 +27,9 @@ if ($act == "add" and $module == "skpd") {
                                               id_Eselon,
                                               pagu_Dana,
                                               visimisi,
-                                              apbd,
-                                              dak,
-                                              apbn)
+                                              Bank,
+                                              NoRek,
+                                              Npwp)
                                       VALUES ('$nm_Skpd',
                                               '$nm_Kepala',
                                               '$id_Pangkat',
@@ -38,8 +38,8 @@ if ($act == "add" and $module == "skpd") {
                                               '$pagu_Dana',
                                               '$visimisi',
                                               '$apbd',
-                                              '$dak',
-                                              '$apbn')");
+                                              '$NoRek',
+                                              '$Npwp')");
         if ($qry)
             {
                 header('location:../main.php?module=skpd');
@@ -57,9 +57,9 @@ if ($act == "add" and $module == "skpd") {
         $id_Eselon = $_POST['id_Eselon'];
         $pagu_Dana = $_POST['pagu_Dana'];
         $visimisi = $_POST['visimisi'];
-        $apbd = $_POST['apbd'];
-        $dak = $_POST['dak'];
-        $apbn = $_POST['apbn'];
+        $Bank = $_POST['Bank'];
+        $NoRek = $_POST['NoRek'];
+        $Npwp = $_POST['Npwp'];
 
         $qry = mysql_query("UPDATE skpd SET nm_Skpd='$nm_Skpd',
                                               nm_Kepala='$nm_Kepala',
@@ -68,9 +68,9 @@ if ($act == "add" and $module == "skpd") {
                                               id_Eselon='$id_Eselon',
                                               pagu_Dana='$pagu_Dana',
                                               visimisi='$visimisi',
-                                              apbd='$apbd',
-                                              dak='$dak',
-                                              apbn='$apbn'
+                                              Bank='$Bank',
+                                              NoRek='$NoRek',
+                                              Npwp='$Npwp'
                                         WHERE id_Skpd = '$id_Skpd'");
         if ($qry)
             {
